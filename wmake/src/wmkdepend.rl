@@ -77,7 +77,7 @@ Note
 #pragma GCC diagnostic ignored "-Wunused-const-variable"
 
 // Length of the input read buffer
-#define INBUFLEN 16384
+#define INBUFLEN 65536
 
 // The executable name (for messages), without requiring access to argv[]
 #define EXENAME  "wmkdepend"
