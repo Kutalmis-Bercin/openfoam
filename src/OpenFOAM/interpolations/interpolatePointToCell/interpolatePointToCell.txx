@@ -6,6 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2016 OpenFOAM Foundation
+    Copyright (C) 2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -32,34 +33,77 @@ License
 template<class Type>
 Type Foam::interpolatePointToCell
 (
-    const GeometricField<Type, pointPatchField, pointMesh>& ptf,
+    const DimensionedField<Type, pointMesh>& ptf,
     const label celli
 )
 {
     const primitiveMesh& mesh = ptf.mesh()();
 
-    const cell& cFaces = mesh.cells()[celli];
-
-    labelHashSet pointHad(10*cFaces.size());
+    labelHashSet usedPoints;
 
     Type sum = Zero;
 
-    forAll(cFaces, i)
+    for (const label facei : mesh.cells()[celli])
     {
-        const face& f = mesh.faces()[cFaces[i]];
-
-        forAll(f, fp)
+        for (const label pointi : mesh.faces()[facei])
         {
-            label v = f[fp];
-
-            if (pointHad.insert(v))
+            if (usedPoints.insert(pointi))
             {
-                sum += ptf[v];
+                sum += ptf[pointi];
             }
         }
     }
 
-    return sum/pointHad.size();
+    if (label npts = usedPoints.size(); npts > 0)
+    {
+        return sum/npts;
+    }
+    else
+    {
+        return sum;
+    }
+}
+
+
+template<class Type>
+Foam::Field<Type> Foam::interpolatePointToCell
+(
+    const DimensionedField<Type, pointMesh>& ptf,
+    const labelUList& cellIds
+)
+{
+    const primitiveMesh& mesh = ptf.mesh()();
+
+    labelHashSet usedPoints;
+
+    Field<Type> result(cellIds.size(), Foam::zero{});
+    auto iter = result.begin();
+
+    for (const label celli : cellIds)
+    {
+        auto& sum = *iter;
+        ++iter;
+
+        usedPoints.clear();
+
+        for (const label facei : mesh.cells()[celli])
+        {
+            for (const label pointi : mesh.faces()[facei])
+            {
+                if (usedPoints.insert(pointi))
+                {
+                    sum += ptf[pointi];
+                }
+            }
+        }
+
+        if (label npts = usedPoints.size(); npts > 0)
+        {
+            sum /= npts;
+        }
+    }
+
+    return result;
 }
 
 

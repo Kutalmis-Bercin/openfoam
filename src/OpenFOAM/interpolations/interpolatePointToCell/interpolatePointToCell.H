@@ -6,6 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2016 OpenFOAM Foundation
+    Copyright (C) 2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -27,19 +28,18 @@ Global
     interpolatePointToCell
 
 Description
-    Interpolates (averages) the vertex values to the cell center.
+    Interpolates (averages) the vertex values to the cell centre.
 
 SourceFiles
-    interpolatePointToCell.C
+    interpolatePointToCell.txx
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef interpolatePointToCell_H
-#define interpolatePointToCell_H
+#ifndef Foam_interpolatePointToCell_H
+#define Foam_interpolatePointToCell_H
 
-#include "GeometricField.H"
+#include "DimensionedField.H"
 #include "pointMesh.H"
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -48,12 +48,20 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// Interpolate field to cell center.
+//- Interpolate point field to cell centre
 template<class Type>
 Type interpolatePointToCell
 (
-    const GeometricField<Type, pointPatchField, pointMesh>& ptf,
+    const DimensionedField<Type, pointMesh>& ptf,
     const label celli
+);
+
+//- Interpolate point field to cell centres
+template<class Type>
+Field<Type> interpolatePointToCell
+(
+    const DimensionedField<Type, pointMesh>& ptf,
+    const labelUList& cellIds
 );
 
 
@@ -64,7 +72,7 @@ Type interpolatePointToCell
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #ifdef NoRepository
-    #include "interpolatePointToCell.C"
+    #include "interpolatePointToCell.txx"
 #endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
