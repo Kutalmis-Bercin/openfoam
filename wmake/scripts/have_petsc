@@ -227,8 +227,10 @@ no_petsc
 
 # Test/query
 case "$1" in
--test)
+-test | -debug-test)
+    [ "$1" = "-debug-test" ] && set -x
     have_petsc
+    [ "$1" = "-debug-test" ] && set +x
     echo_petsc
     ;;
 -query)

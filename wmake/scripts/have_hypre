@@ -172,8 +172,10 @@ no_hypre
 
 # Test/query
 case "$1" in
--test)
+-test | -debug-test)
+    [ "$1" = "-debug-test" ] && set -x
     have_hypre
+    [ "$1" = "-debug-test" ] && set +x
     echo_hypre
     ;;
 -query)

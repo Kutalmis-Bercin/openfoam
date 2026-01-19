@@ -155,8 +155,10 @@ no_fftw
 
 # Test/query
 case "$1" in
--test)
+-test | -debug-test)
+    [ "$1" = "-debug-test" ] && set -x
     have_fftw
+    [ "$1" = "-debug-test" ] && set +x
     echo_fftw
     ;;
 -query)

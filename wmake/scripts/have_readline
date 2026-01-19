@@ -133,8 +133,10 @@ no_readline
 
 # Test/query
 case "$1" in
--test)
+-test | -debug-test)
+    [ "$1" = "-debug-test" ] && set -x
     have_readline
+    [ "$1" = "-debug-test" ] && set +x
     echo_readline
     ;;
 esac

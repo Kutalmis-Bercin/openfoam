@@ -234,8 +234,10 @@ no_cgal
 
 # Test/query
 case "$1" in
--test)
+-test | -debug-test)
+    [ "$1" = "-debug-test" ] && set -x
     have_cgal
+    [ "$1" = "-debug-test" ] && set +x
     echo_cgal
     ;;
 -query)

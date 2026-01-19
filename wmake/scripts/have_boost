@@ -5,7 +5,7 @@
 #   \\  /    A nd           | www.openfoam.com
 #    \\/     M anipulation  |
 #------------------------------------------------------------------------------
-#     Copyright (C) 2018-2020 OpenCFD Ltd.
+#     Copyright (C) 2018-2026 OpenCFD Ltd.
 #------------------------------------------------------------------------------
 # License
 #     This file is part of OpenFOAM, distributed under GPL-3.0-or-later.
@@ -61,6 +61,7 @@ search_boost()
     local warn # warn="==> skip boost"
     local incName="boost/version.hpp"
     local libName="libboost_system"
+    local libName2="libboost_thread"
 
     local prefix="${1:-system}"
     local header library
@@ -73,7 +74,7 @@ search_boost()
     elif hasAbsdir "$prefix"
     then
         header=$(findFirstFile "$prefix/include/$incName")
-        library=$(findExtLib "$libName")
+        library=$(findExtLib "$libName" "$libName2")
     elif isSystem "$prefix"
     then
         header=$(findSystemInclude -name="$incName")
@@ -92,6 +93,7 @@ search_boost()
     # Library
     [ -n "$library" ] \
     || library=$(findLibrary -prefix="$prefix" -name="$libName") \
+    || library=$(findLibrary -prefix="$prefix" -name="$libName2") \
     || {
         [ -n "$warn" ] && echo "$warn (no library)"
         return 2
@@ -156,8 +158,10 @@ no_boost
 
 # Test/query
 case "$1" in
--test)
+-test | -debug-test)
+    [ "$1" = "-debug-test" ] && set -x
     have_boost
+    [ "$1" = "-debug-test" ] && set +x
     echo_boost
     ;;
 -query)
