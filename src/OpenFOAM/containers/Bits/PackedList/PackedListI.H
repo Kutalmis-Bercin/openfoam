@@ -682,17 +682,7 @@ inline unsigned int Foam::PackedList<Width>::get(const label i) const
 {
     if (i < 0 || i >= size())
     {
-        #ifdef FULLDEBUG
-        if (i < 0)
-        {
-            WarningInFunction
-                << "Ignoring attempt to get a negative index " << i
-                << " range is [0," << size_ << ")"
-                << endl;
-        }
-        #endif
-
-        return 0u;        // Out-of-bounds (lazy): return 0 (false)
+        return 0u;          // Out-of-bounds: return 0 (false)
     }
 
     return reference(const_cast<PackedList<Width>*>(this), i).get();
@@ -817,6 +807,7 @@ inline void Foam::PackedList<Width>::fill(const unsigned int val)
 template<unsigned Width>
 inline unsigned int Foam::PackedList<Width>::operator[](const label i) const
 {
+    // Silently ignores out-of-bounds
     return get(i);
 }
 

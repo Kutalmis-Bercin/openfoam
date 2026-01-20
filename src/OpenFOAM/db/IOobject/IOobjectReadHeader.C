@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2016 OpenFOAM Foundation
-    Copyright (C) 2019-2023 OpenCFD Ltd.
+    Copyright (C) 2019-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -39,33 +39,37 @@ Foam::IOstreamOption Foam::IOobject::parseHeader(const dictionary& headerDict)
     IOstreamOption streamOpt;  // == (ASCII, currentVersion)
 
     // Treat "version" as optional
+    if (token tok; headerDict.readIfPresent("version", tok))
     {
-        token tok;
-        if (headerDict.readIfPresent("version", tok))
-        {
-            streamOpt.version(tok);
-        }
+        streamOpt.version(tok);
     }
 
-    // Treat "format" as mandatory, could also as optional
+    // Treat "format" as mandatory for now
     streamOpt.format(headerDict.get<word>("format"));
 
+    // The "class" entry is mandatory
     headerClassName_ = headerDict.get<word>("class");
 
+    // The "object" entry is mandatory, but not actually used here
     const word headerObject(headerDict.get<word>("object"));
 
     // The "note" entry is optional
     headerDict.readIfPresent("note", note_);
 
     // The "arch" information may be missing
-    string arch;
-    if (headerDict.readIfPresent("arch", arch))
-    {
-        unsigned val = foamVersion::labelByteSize(arch);
-        if (val) sizeofLabel_ = static_cast<unsigned char>(val);
+    sizeofLabel_ = static_cast<unsigned char>(sizeof(label));
+    sizeofScalar_ = static_cast<unsigned char>(sizeof(scalar));
 
-        val = foamVersion::scalarByteSize(arch);
-        if (val) sizeofScalar_ = static_cast<unsigned char>(val);
+    if (string arch; headerDict.readIfPresent("arch", arch))
+    {
+        if (auto val = foamVersion::labelByteSize(arch); val > 0)
+        {
+            sizeofLabel_ = static_cast<unsigned char>(val);
+        }
+        if (auto val = foamVersion::scalarByteSize(arch); val > 0)
+        {
+            sizeofScalar_ = static_cast<unsigned char>(val);
+        }
     }
 
     return streamOpt;

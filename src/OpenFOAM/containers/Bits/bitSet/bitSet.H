@@ -256,17 +256,21 @@ public:
         //  \note Method name compatibility with boost::dynamic_bitset
         bool intersects(const bitSet& other) const;
 
-        //- Test for \em True value at specified position,
-        //- never auto-vivify entries.
+        //- Test for \c true value at specified position.
+        //- A no-op and returns \c false for out-of-range positions
+        //- (safely/silently ignores negative positions).
+        //  Never auto-vivify entries.
         //
         //  \note Method name compatibility with std::bitset
-        bool test(const label pos) const { return this->get(pos); }
+        bool test(label pos) const { return this->get(pos); }
 
-        //- Test for \em True value at specified position,
-        //- never auto-vivify entries.
+        //- Test for \c true value at specified position.
+        //- A no-op and returns \c false for out-of-range positions
+        //- (safely/silently ignores negative positions).
+        //  Never auto-vivify entries.
         //
         //  \note Method name compatibility with HashSet
-        bool contains(const label pos) const { return this->get(pos); }
+        bool contains(label pos) const { return this->get(pos); }
 
         //- Locate the first bit that is set.
         //  \return the location or -1 if there are no bits set.

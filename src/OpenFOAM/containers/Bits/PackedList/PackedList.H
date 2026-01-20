@@ -326,16 +326,20 @@ public:
 
     // Access
 
-        //- Get value at index i or 0 for out-of-range.
+        //- Get value at specified index.
+        //- A no-op and returns \c 0 for out-of-range positions
+        //- (safely/silently ignores negative positions).
         //  Never auto-vivify entries.
         inline unsigned int get(const label i) const;
 
-        //- Set value at index i, default value set is the max_value.
+        //- Set value at specified index, default value set is the max_value.
         //  Does auto-vivify for non-existent, non-zero entries.
         //  \return true if value changed.
         inline bool set(const label i, unsigned int val = ~0u);
 
-        //- Unset the entry at index i.
+        //- Unset the entry at specified index.
+        //- A no-op and returns \c false for out-of-range positions
+        //- (safely/silently ignores negative positions).
         //  Never auto-vivify entries.
         //  \return true if the value changed.
         inline bool unset(const label i);

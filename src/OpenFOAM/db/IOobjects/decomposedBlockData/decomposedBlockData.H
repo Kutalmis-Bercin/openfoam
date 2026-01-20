@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2017-2018 OpenFOAM Foundation
-    Copyright (C) 2020-2025 OpenCFD Ltd.
+    Copyright (C) 2020-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -215,7 +215,8 @@ public:
         //- decomposedBlockData
         static bool readHeader(IOobject& io, Istream& is);
 
-        //- Helper: write FoamFile IOobject header
+        //- Helper: write FoamFile IOobject header for the
+        //- decomposedBlockData container
         static void writeHeader
         (
             Ostream& os,
@@ -227,7 +228,9 @@ public:
             const dictionary& extraEntries
         );
 
-        //- Helper: write FoamFile IOobject header
+        //- Helper: write FoamFile IOobject header for the
+        //- decomposedBlockData container, but also includes information about
+        //- the enclosed data as "data.class" and "data.format" entries.
         static void writeHeader
         (
             Ostream& os,
@@ -235,7 +238,18 @@ public:
             const IOobject& io
         );
 
-        //- Helper: generate additional entries for FoamFile header
+        //- Helper: write IOobject (data) header for the enclosed data
+        //- (not of the container).
+        static void writeDataHeader
+        (
+            Ostream& os,
+            const IOobject& io,
+            //! Alternative header name (default: FoamFile)
+            const word& dataHeaderName = word::null
+        );
+
+        //- Helper: generate additional dictionary entries
+        //- "data.class", "data.format", "meta" for a FoamFile header
         static void writeExtraHeaderContent
         (
             dictionary& dict,

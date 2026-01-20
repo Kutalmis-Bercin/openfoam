@@ -5,7 +5,7 @@
     \\  /    A nd           | www.openfoam.com
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
-    Copyright (C) 2021-2023 OpenCFD Ltd.
+    Copyright (C) 2021-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -238,6 +238,41 @@ void Foam::decomposedBlockData::writeHeader
     {
         IOobject::writeDivider(os) << nl;
     }
+}
+
+
+void Foam::decomposedBlockData::writeDataHeader
+(
+    Ostream& os,
+    const IOobject& io,
+    const word& dataHeaderName
+)
+{
+    // Probably never want this:
+    // if (IOobject::bannerEnabled())
+    // {
+    //     IOobject::writeBanner(os);
+    // }
+
+    if (dataHeaderName.empty())
+    {
+        os.beginBlock("FoamFile");
+    }
+    else
+    {
+        os.beginBlock(dataHeaderName);
+    }
+
+    // Standard header entries
+    IOobject::writeHeaderContent(os, io, io.type(), io.findMetaData());
+
+    os.endBlock();
+
+    // Probably never want this:
+    // if (IOobject::bannerEnabled())
+    // {
+    //     IOobject::writeDivider(os) << nl;
+    // }
 }
 
 
