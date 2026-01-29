@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2017 OpenFOAM Foundation
-    Copyright (C) 2015-2025 OpenCFD Ltd.
+    Copyright (C) 2015-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -1610,10 +1610,10 @@ void Foam::argList::parse
                 // the masterUncollated/collated handler. Note that we
                 // also have to protect the actual dictionary parsing since
                 // it might trigger file access (e.g. #include, #codeStream)
-                const bool oldParRun = UPstream::parRun(false);
+                const auto oldParRun = UPstream::parRun(false);
                 // Note: non-parallel running might update
                 // fileOperation::nProcs() so store & restore below
-                const label nOldProcs = fileHandler().nProcs();
+                const auto nOldProcs = fileHandler().nProcs();
 
                 autoPtr<ISstream> dictStream
                 (
@@ -1673,8 +1673,9 @@ void Foam::argList::parse
                     }
                 }
 
-                UPstream::parRun(oldParRun);  // Restore parallel state
-                const_cast<fileOperation&>(fileHandler()).nProcs(nOldProcs);
+                // Restore states
+                UPstream::parRun(oldParRun);
+                fileHandler().constCast().nProcs(nOldProcs);
 
                 if (UPstream::nProcs() == 1)
                 {
@@ -1913,9 +1914,11 @@ void Foam::argList::parse
     {
         fileOperation::fileHandlerPtr_->distributed(true);
 
-        const labelList& ranks = fileHandler().ioRanks();
-
-        if (runControl_.parRun() && ranks.size())
+        if
+        (
+            const auto& ranks = fileHandler().ioRanks();
+            runControl_.parRun() && ranks.size()
+        )
         {
             // Detect processor directories both on local proc and on
             // (world) master proc. If the local proc doesn't have them
@@ -2004,7 +2007,7 @@ void Foam::argList::parse
                     }
 
                     UPstream::parRun(oldParRun);
-                    const_cast<fileOperation&>(fileHandler()).nProcs(nOldProcs);
+                    fileHandler().constCast().nProcs(nOldProcs);
                 }
                 Pstream::broadcast(rankToDirs);
 

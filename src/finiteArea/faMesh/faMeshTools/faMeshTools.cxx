@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2012-2016 OpenFOAM Foundation
-    Copyright (C) 2015-2025 OpenCFD Ltd.
+    Copyright (C) 2015-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -276,9 +276,9 @@ Foam::faMeshTools::loadOrCreateMesh_impl
     PtrList<entry> patchEntries;
     if (UPstream::master())
     {
-        const bool oldParRun = UPstream::parRun(false);
-        const label oldNumProcs = fileHandler().nProcs();
-        const int oldCache = fileOperation::cacheLevel(0);
+        const auto oldParRun = UPstream::parRun(false);
+        const auto oldNumProcs = fileHandler().nProcs();
+        const auto oldCache = fileOperation::cacheLevel(0);
 
         patchEntries = faBoundaryMeshEntries::readContents
         (
@@ -295,10 +295,11 @@ Foam::faMeshTools::loadOrCreateMesh_impl
         // No processor patches (remove here or later)
         // faBoundaryMeshEntries::removeProcPatches(patchEntries);
 
+        // Restore states
         fileOperation::cacheLevel(oldCache);
         if (oldParRun)
         {
-            const_cast<fileOperation&>(fileHandler()).nProcs(oldNumProcs);
+            fileHandler().constCast().nProcs(oldNumProcs);
         }
         UPstream::parRun(oldParRun);
     }
@@ -349,9 +350,9 @@ Foam::faMeshTools::loadOrCreateMesh_impl
     {
         // No local mesh - need to synthesize one
 
-        const bool oldParRun = UPstream::parRun(false);
-        const label oldNumProcs = fileHandler().nProcs();
-        const int oldCache = fileOperation::cacheLevel(0);
+        const auto oldParRun = UPstream::parRun(false);
+        const auto oldNumProcs = fileHandler().nProcs();
+        const auto oldCache = fileOperation::cacheLevel(0);
 
         // Create dummy mesh - on procs that don't already have a mesh
         meshPtr.reset
@@ -422,12 +423,13 @@ Foam::faMeshTools::loadOrCreateMesh_impl
             meshPtr.reset(nullptr);
         }
 
+        // Restore states
         fileOperation::cacheLevel(oldCache);
         if (oldParRun)
         {
-            const_cast<fileOperation&>(fileHandler()).nProcs(oldNumProcs);
+            fileHandler().constCast().nProcs(oldNumProcs);
         }
-        UPstream::parRun(oldParRun);  // Restore parallel state
+        UPstream::parRun(oldParRun);
     }
     else if (readHandlerPtr && haveLocalMesh)
     {
@@ -448,7 +450,7 @@ Foam::faMeshTools::loadOrCreateMesh_impl
         // Comparing global ranks in the communicator.
         if (UPstream::sameProcs(fileHandler().comm(), meshProcIds))
         {
-            const_cast<fileOperation&>(fileHandler()).nProcs(numWorldProcs);
+            fileHandler().constCast().nProcs(numWorldProcs);
             // Can use the handler communicator as is.
             UPstream::commWorld(fileHandler().comm());
         }

@@ -43,8 +43,7 @@ Type Foam::fileOperations::masterUncollatedFileOperation::masterOp
     if (IFstream::debug)
     {
         Pout<< "masterUncollatedFileOperation::masterOp : Operation "
-            << typeid(FileOp).name()
-            << " on " << fName << endl;
+            << typeid(FileOp).name() << " on " << fName << endl;
     }
 
     if (UPstream::is_parallel(comm))

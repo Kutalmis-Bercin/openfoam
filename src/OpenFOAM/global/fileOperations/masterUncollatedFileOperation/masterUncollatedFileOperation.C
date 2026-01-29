@@ -1115,7 +1115,7 @@ Foam::fileName Foam::fileOperations::masterUncollatedFileOperation::filePath
                 newInstancePath
             );
 
-        const_cast<masterUncollatedFileOperation&>(*this).nProcs(oldNProcs);
+        this->constCast().nProcs(oldNProcs);
         fileOperation::cacheLevel(oldCache);
         UPstream::parRun(oldParRun);
 
@@ -1270,7 +1270,7 @@ Foam::fileName Foam::fileOperations::masterUncollatedFileOperation::dirPath
             newInstancePath
         );
 
-        const_cast<masterUncollatedFileOperation&>(*this).nProcs(oldNProcs);
+        this->constCast().nProcs(oldNProcs);
         fileOperation::cacheLevel(oldCache);
         UPstream::parRun(oldParRun);
 
@@ -1467,7 +1467,8 @@ Foam::fileOperations::masterUncollatedFileOperation::findInstance
         {
             foundInstance = io.instance();
         }
-        const_cast<masterUncollatedFileOperation&>(*this).nProcs(oldNProcs);
+
+        this->constCast().nProcs(oldNProcs);
         fileOperation::cacheLevel(oldCache);
         UPstream::parRun(oldParRun);
     }
@@ -1626,7 +1627,7 @@ Foam::fileOperations::masterUncollatedFileOperation::findInstance
             }
         }
 
-        const_cast<masterUncollatedFileOperation&>(*this).nProcs(oldNProcs);
+        this->constCast().nProcs(oldNProcs);
         fileOperation::cacheLevel(oldCache);
         UPstream::parRun(oldParRun);  // Restore parallel state
     }
@@ -1745,7 +1746,7 @@ Foam::fileOperations::masterUncollatedFileOperation::readObjects
             }
         }
 
-        const_cast<masterUncollatedFileOperation&>(*this).nProcs(oldNProcs);
+        this->constCast().nProcs(oldNProcs);
         fileOperation::cacheLevel(oldCache);
         UPstream::parRun(oldParRun);  // Restore parallel state
     }
@@ -2197,7 +2198,7 @@ bool Foam::fileOperations::masterUncollatedFileOperation::read
             ok = io.readData(is);
             io.close();
 
-            const_cast<masterUncollatedFileOperation&>(*this).nProcs(oldNProcs);
+            this->constCast().nProcs(oldNProcs);
             fileOperation::cacheLevel(oldCache);
             UPstream::parRun(oldParRun);  // Restore parallel state
         }
@@ -2316,7 +2317,7 @@ Foam::instantList Foam::fileOperations::masterUncollatedFileOperation::findTimes
 
             times = fileOperation::findTimes(directory, constantName);
 
-            const_cast<masterUncollatedFileOperation&>(*this).nProcs(oldNProcs);
+            this->constCast().nProcs(oldNProcs);
             fileOperation::cacheLevel(oldCache);
             UPstream::parRun(oldParRun);  // Restore parallel state
         }
@@ -2739,7 +2740,7 @@ void Foam::fileOperations::masterUncollatedFileOperation::addWatches
             removeWatch(watchIndices[index]);
         }
 
-        const_cast<masterUncollatedFileOperation&>(*this).nProcs(oldNProcs);
+        this->constCast().nProcs(oldNProcs);
         fileOperation::cacheLevel(oldCache);
         UPstream::parRun(oldParRun);
     }

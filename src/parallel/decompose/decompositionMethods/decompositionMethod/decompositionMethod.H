@@ -225,11 +225,11 @@ public:
         }
 
         //- Set number of domains. Return old value
-        label nDomains(const label n)
+        label nDomains(label n) noexcept
         {
-            const label oldNum = nDomains_;
+            label old(nDomains_);
             nDomains_ = n;
-            return oldNum;
+            return old;
         }
 
         //- True if the method is purely geometric,

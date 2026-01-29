@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2017 OpenFOAM Foundation
-    Copyright (C) 2020-2025 OpenCFD Ltd.
+    Copyright (C) 2020-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -526,7 +526,7 @@ public:
 
         //- The list of IO ranks (global ranks)
         //  Primarily for additional bookkeeping in non-parallel
-        const labelList& ioRanks() const noexcept { return ioRanks_; }
+        const labelUList& ioRanks() const noexcept { return ioRanks_; }
 
         //- Return info proxy,
         //- used to print information to a stream
@@ -542,6 +542,13 @@ public:
         //- Transfer ownership of communicator to this fileOperation.
         //- Use with caution
         virtual void storeComm() const = 0;
+
+        //- Return non-const reference to this fileOperation.
+        //  Useful for adjusting nProcs().
+        fileOperation& constCast() const noexcept
+        {
+            return const_cast<fileOperation&>(*this);
+        }
 
 
         // OSSpecific equivalents
@@ -854,7 +861,7 @@ public:
             //  Used to cache format of e.g. processorsDDD.
             //  Returns old number of processors.
             //  Only used in decomposePar
-            label nProcs(const label numProcs) noexcept
+            label nProcs(label numProcs) noexcept
             {
                 label old(nProcs_);
                 nProcs_ = numProcs;

@@ -244,7 +244,7 @@ int main(int argc, char *argv[])
     }
 
     // Warn fileHandler of number of processors
-    const_cast<fileOperation&>(fileHandler()).nProcs(nProcs);
+    fileHandler().constCast().nProcs(nProcs);
 
     // Create the processor databases
     PtrList<Time> databases(nProcs);

@@ -668,7 +668,7 @@ Foam::fileOperation::lookupAndCacheProcessorsPath
             // Serial: use the number of decompositions (if found)
             if (nProcs)
             {
-                const_cast<fileOperation&>(*this).nProcs(nProcs);
+                this->constCast().nProcs(nProcs);
             }
         }
 
