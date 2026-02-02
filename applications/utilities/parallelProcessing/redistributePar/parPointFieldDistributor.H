@@ -5,7 +5,7 @@
     \\  /    A nd           | www.openfoam.com
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
-    Copyright (C) 2022-2023 OpenCFD Ltd.
+    Copyright (C) 2022-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -54,9 +54,9 @@ SourceFiles
 #ifndef Foam_parPointFieldDistributor_H
 #define Foam_parPointFieldDistributor_H
 
-#include "PtrList.H"
 #include "pointMesh.H"
 #include "pointFieldsFwd.H"
+#include "PtrList.H"
 #include "Switch.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -123,73 +123,72 @@ public:
     // Constructors
 
         //- Basic construction
-        //
-        //  \param srcMesh  The source pointMesh
-        //  \param savePoints  Call saveMeshPoints() immediately
-        //  \param isWriteProc  Tagged for output writing (on this proc)
         explicit parPointFieldDistributor
         (
+            //! The source pointMesh
             const pointMesh& srcMesh,
-            const bool savePoints,  // normally false
+            //! Call saveMeshPoints() immediately. Normally false
+            const bool savePoints,
+            //! Tagged for output writing (on this proc)
             const bool isWriteProc
         );
 
         //- Basic construction
-        //
-        //  \param srcMesh  The source pointMesh
-        //  \param savePoints  Call saveMeshPoints() immediately
-        //  \param writeHandler  Valid for output writing (on this proc)
         explicit parPointFieldDistributor
         (
+            //! The source pointMesh
             const pointMesh& srcMesh,
-            const bool savePoints,  // normally false
+            //! Call saveMeshPoints() immediately. Normally false
+            const bool savePoints,
+            //! Valid for output writing (on this proc)
             refPtr<fileOperation>& writeHandler
         );
 
         //- Full construction of source/target
-        //
-        //  \param srcMesh  The source pointMesh
-        //  \param tgtMesh  The target pointMesh
-        //  \param distMap  The distribution map
-        //  \param savePoints  Call saveMeshPoints() immediately
-        //  \param isWriteProc  Tagged for output writing (on this proc)
         explicit parPointFieldDistributor
         (
+            //! The source pointMesh
             const pointMesh& srcMesh,
+            //! The target pointMesh
             const pointMesh& tgtMesh,
+            //! The distribution map
             const mapDistributePolyMesh& distMap,
-            const bool savePoints,  // normally false
+            //! Call saveMeshPoints() immediately. Normally false
+            const bool savePoints,
+            //! Tagged for output writing (on this proc)
             const bool isWriteProc
         );
 
         //- Full construction of source/target
-        //
-        //  \param srcMesh  The source pointMesh
-        //  \param tgtMesh  The target pointMesh
-        //  \param distMap  The distribution map
-        //  \param savePoints  Call saveMeshPoints() immediately
-        //  \param writeHandler  Valid for output writing (on this proc)
         explicit parPointFieldDistributor
         (
+            //! The source pointMesh
             const pointMesh& srcMesh,
+            //! The target pointMesh
             const pointMesh& tgtMesh,
+            //! The distribution map
             const mapDistributePolyMesh& distMap,
-            const bool savePoints,  // normally false
+            //! Call saveMeshPoints() immediately. Normally false
+            const bool savePoints,
+            //! Valid for output writing (on this proc)
             refPtr<fileOperation>& writeHandler
         );
 
 
     // Member Functions
 
+        //- The source mesh
+        const pointMesh& sourceMesh() const noexcept { return srcMesh_; }
+
         //- True if meshPoints (per boundary) for the source mesh
         //- have been saved
-        bool hasMeshPoints() const;
+        bool hasMeshPoints() const noexcept;
 
         //- True if patch maps (per boundary) exist
-        bool hasPatchPointMaps() const;
+        bool hasPatchPointMaps() const noexcept;
 
         //- True if a target mesh/distribution map has been attached
-        bool hasTarget() const;
+        bool hasTarget() const noexcept;
 
         //- Clear out meshPoints (per boundary) for the source mesh
         void clearMeshPoints();

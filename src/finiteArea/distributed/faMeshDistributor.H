@@ -5,7 +5,7 @@
     \\  /    A nd           | www.openfoam.com
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
-    Copyright (C) 2022-2025 OpenCFD Ltd.
+    Copyright (C) 2022-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -131,18 +131,26 @@ public:
         //- Construct from components, using bool to control writing
         faMeshDistributor
         (
+            //! The source mesh
             const faMesh& srcMesh,
+            //! The target mesh
             const faMesh& tgtMesh,
+            //! The distribution map
             const mapDistributePolyMesh& faDistMap,
+            //! Tagged for output writing (on this proc)
             const bool isWriteProc
         );
 
         //- Construct from components, using file handler to control writing
         faMeshDistributor
         (
+            //! The source mesh
             const faMesh& srcMesh,
+            //! The target mesh
             const faMesh& tgtMesh,
+            //! The distribution map
             const mapDistributePolyMesh& faDistMap,
+            //! Handler for output writing (on this proc)
             refPtr<fileOperation>& writeHandler
         );
 
@@ -154,7 +162,7 @@ public:
         static mapDistributePolyMesh distribute
         (
             const faMesh& oldMesh,
-            const mapDistributePolyMesh& distMap,  //! From polyMesh
+            const mapDistributePolyMesh& distMap,  //!< From polyMesh
             const polyMesh& tgtPolyMesh,
             autoPtr<faMesh>& newMeshPtr
         );
@@ -164,12 +172,19 @@ public:
         static mapDistributePolyMesh distribute
         (
             const faMesh& oldMesh,
-            const mapDistributePolyMesh& distMap,  //! From polyMesh
+            const mapDistributePolyMesh& distMap,  //!< From polyMesh
             autoPtr<faMesh>& newMeshPtr
         );
 
 
     // Member Functions
+
+        //- The source mesh
+        const faMesh& sourceMesh() const noexcept { return srcMesh_; }
+
+        //- The destination mesh
+        const faMesh& targetMesh() const noexcept { return tgtMesh_; }
+
 
     // Field Mapping
 

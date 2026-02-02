@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2015 OpenFOAM Foundation
-    Copyright (C) 2018-2023 OpenCFD Ltd.
+    Copyright (C) 2018-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -44,8 +44,8 @@ SourceFiles
 #ifndef Foam_parFvFieldDistributor_H
 #define Foam_parFvFieldDistributor_H
 
-#include "PtrList.H"
 #include "fvMesh.H"
+#include "PtrList.H"
 #include "Switch.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -112,35 +112,36 @@ public:
     // Constructors
 
         //- Construct from components
-        //
-        //  \param srcMesh  The source mesh (eg, processor)
-        //  \param tgtMesh  The target mesh (eg, reconstructed)
-        //  \param distMap  The distribution map
-        //  \param isWriteProc  Tagged for output writing (on this proc)
         parFvFieldDistributor
         (
+            //! The source mesh (eg, processor)
             const fvMesh& srcMesh,
+            //! The target mesh (eg, reconstructed)
             fvMesh& tgtMesh,
+            //! The distribution map
             const mapDistributePolyMesh& distMap,
+            //! Tagged for output writing (on this proc)
             const bool isWriteProc
         );
 
         //- Construct from components
-        //
-        //  \param srcMesh  The source mesh (eg, processor)
-        //  \param tgtMesh  The target mesh (eg, reconstructed)
-        //  \param distMap  The distribution map
-        //  \param writeHandler  Handler for output writing (on this proc)
         parFvFieldDistributor
         (
+            //! The source mesh (eg, processor)
             const fvMesh& srcMesh,
+            //! The target mesh (eg, reconstructed)
             fvMesh& tgtMesh,
+            //! The distribution map
             const mapDistributePolyMesh& distMap,
+            //! Handler for output writing (on this proc)
             refPtr<fileOperation>& writeHandler
         );
 
 
     // Member Functions
+
+        //- The source mesh
+        const fvMesh& sourceMesh() const noexcept { return srcMesh_; }
 
         //- Helper: reconstruct and write mesh points
         //  (note: should be moved to something like processorMeshes class)

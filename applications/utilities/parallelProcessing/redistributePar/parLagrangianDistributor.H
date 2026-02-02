@@ -42,7 +42,6 @@ SourceFiles
 #ifndef Foam_parLagrangianDistributor_H
 #define Foam_parLagrangianDistributor_H
 
-#include "PtrList.H"
 #include "fvMesh.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -154,6 +153,12 @@ public:
 
 
     // Member Functions
+
+        //- The source mesh
+        const fvMesh& sourceMesh() const noexcept { return srcMesh_; }
+
+        //- The destination mesh
+        const fvMesh& targetMesh() const noexcept { return tgtMesh_; }
 
         //- Redistribute and write lagrangian positions
         autoPtr<mapDistributeBase> distributeLagrangianPositions

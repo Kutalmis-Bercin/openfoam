@@ -137,19 +137,19 @@ Foam::parPointFieldDistributor::parPointFieldDistributor
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-bool Foam::parPointFieldDistributor::hasMeshPoints() const
+bool Foam::parPointFieldDistributor::hasMeshPoints() const noexcept
 {
     return !patchMeshPoints_.empty();
 }
 
 
-bool Foam::parPointFieldDistributor::hasPatchPointMaps() const
+bool Foam::parPointFieldDistributor::hasPatchPointMaps() const noexcept
 {
     return !patchPointMaps_.empty();
 }
 
 
-bool Foam::parPointFieldDistributor::hasTarget() const
+bool Foam::parPointFieldDistributor::hasTarget() const noexcept
 {
     return (tgtMeshRef_ && distMapRef_);
 }
