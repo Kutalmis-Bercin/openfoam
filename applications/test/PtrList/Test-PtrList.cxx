@@ -317,23 +317,23 @@ int main(int argc, char *argv[])
         auto citer = llist1.begin();
 
         Info<< *citer << endl;
-        Info<< typeid(*citer).name() << endl;
+        Info<< error::demangle(typeid(*citer)) << endl;
 
         ++citer;
         ++citer;
 
         --citer;
 
-        Info<< typeid(llist1.begin()).name() << endl;
+        Info<< error::demangle(typeid(llist1.begin())) << endl;
 
         forAllIters(llist1, it)
         {
-            Info<< typeid(*it).name() << nl
+            Info<< error::demangle(typeid(*it)) << nl
                 << "reversed: " << *it << endl;
         }
         for (const auto& it : llist1)
         {
-            Info<< typeid(it).name() << nl
+            Info<< error::demangle(typeid(it)) << nl
                 << "for-: " << it << endl;
         }
     }
@@ -349,7 +349,7 @@ int main(int argc, char *argv[])
 
         for (const auto& it : llist1)
         {
-            Info<< typeid(it).name() << nl
+            Info<< error::demangle(typeid(it)) << nl
                 << "for-: " << it << endl;
         }
 

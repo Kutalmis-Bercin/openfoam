@@ -5,7 +5,7 @@
     \\  /    A nd           | www.openfoam.com
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
-    Copyright (C) 2025 OpenCFD Ltd.
+    Copyright (C) 2025-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -190,7 +190,7 @@ void printTypeName()
     }
     else
     {
-        Info<< typeid(T).name();
+        Info<< error::demangle<T>();
     }
     if constexpr (showSize)
     {
@@ -215,7 +215,8 @@ void printPstreamTraits(std::string_view name = std::string_view())
     }
     else
     {
-        Info<< typeid(Type).name() << " (" << sizeof(Type) << " bytes)";
+        Info<< error::demangle<Type>()
+            << " (" << sizeof(Type) << " bytes)";
     }
 
     {
@@ -231,7 +232,8 @@ void printPstreamTraits(std::string_view name = std::string_view())
             }
             else
             {
-                Info<< typeid(cmpt).name() << " (" << sizeof(cmpt) << " bytes)";
+                Info<< error::demangle(typeid(cmpt))
+                    << " (" << sizeof(cmpt) << " bytes)";
             }
         }
     }
@@ -309,7 +311,8 @@ void printPstreamTraits(std::string_view name = std::string_view())
         }
         else
         {
-            Info<< typeid(base).name() << " (" << sizeof(base) << " bytes)";
+            Info<< error::demangle(typeid(base))
+                << " (" << sizeof(base) << " bytes)";
         }
 
         Info<< " cmpt-type=";

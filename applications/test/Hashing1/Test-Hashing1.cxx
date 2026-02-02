@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
         typedef unsigned Type;
         Type value = 100;
 
-        Info<< "hash " << typeid(value).name() << " of " << value << nl;
+        Info<< "hash " << error::demangle<Type>() << " of " << value << nl;
         Info<< "    Hasher: " << rawHasher(value) << nl;
         Info<< "    Hash<>: " << Hash<Type>()(value) << nl;
     }
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
         typedef int32_t Type;
         Type value = 100;
 
-        Info<< "hash " << typeid(value).name() << " of " << value << nl;
+        Info<< "hash " << error::demangle<Type>() << " of " << value << nl;
         Info<< "    Hasher: " << rawHasher(value) << nl;
         Info<< "    Hash<>: " << Hash<Type>()(value) << nl;
     }
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
         typedef int64_t Type;
         Type value = 100;
 
-        Info<< "hash " << typeid(value).name() << " of " << value << nl;
+        Info<< "hash " << error::demangle<Type>() << " of " << value << nl;
         Info<< "    Hasher: " << rawHasher(value) << nl;
         Info<< "    Hash<>: " << Hash<Type>()(value) << nl;
     }

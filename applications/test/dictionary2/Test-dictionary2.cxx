@@ -48,7 +48,7 @@ void entryInfo(entry* e)
     if (e)
     {
         Info<< "added "
-            << e->keyword() << ": " << typeid(e).name();
+            << e->keyword() << ": " << error::demangle(typeid(e));
 
         if (auto* stream = e->streamPtr())
         {

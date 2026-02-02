@@ -5,7 +5,7 @@
     \\  /    A nd           | www.openfoam.com
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
-    Copyright (C) 2018-2021 OpenCFD Ltd.
+    Copyright (C) 2018-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -31,7 +31,7 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
-#include <typeinfo>
+#include "error.H"
 #include "foamVersion.H"
 #include "Switch.H"
 #include "IOstreams.H"
@@ -71,16 +71,16 @@ int main()
 
     Info
         << "\nTypes" << nl
-        << "version   " << typeid(foamVersion::version).name() << nl
-        << "build     " << typeid(foamVersion::build).name() << nl
-        << "buildArch " << typeid(foamVersion::buildArch).name() << nl
-        << "FOAMversion " << typeid(Foam::FOAMversion).name() << nl
-        << "FOAMbuild   " << typeid(Foam::FOAMbuild).name() << nl;
+        << "version   " << error::demangle(typeid(foamVersion::version)) << nl
+        << "build     " << error::demangle(typeid(foamVersion::build)) << nl
+        << "buildArch " << error::demangle(typeid(foamVersion::buildArch)) << nl
+        << "FOAMversion " << error::demangle(typeid(Foam::FOAMversion)) << nl
+        << "FOAMbuild   " << error::demangle(typeid(Foam::FOAMbuild)) << nl;
 
     Info
         << "\nVerify memory addresses are identical:" << nl
-        << "macro     " << name(Foam::FOAMversion) << nl
-        << "namespace " << name(&(foamVersion::version[0])) << nl;
+        << "macro     " << Foam::name(Foam::FOAMversion) << nl
+        << "namespace " << Foam::name(&(foamVersion::version[0])) << nl;
 
 
     // Test extraction

@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
 
         Info<<"liq: " << liqProp() << nl << nl;
         Info<<"liq-type: " << liqProp->type() << nl << nl;
-        Info<<"type: " << typeid(liqProp.get()).name() << nl;
+        Info<<"type: " << error::demangle(typeid(liqProp.get())) << nl;
     }
 
     // Memory transfer

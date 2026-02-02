@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2015 OpenFOAM Foundation
-    Copyright (C) 2015-2025 OpenCFD Ltd.
+    Copyright (C) 2015-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -58,6 +58,7 @@ SeeAlso
 
 #include "messageStream.H"
 #include <memory>
+#include <typeinfo>
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -193,7 +194,7 @@ public:
 
         //- Specify exception throwing state (on or off)
         //  \return the previous throwing state
-        bool throwing(const bool on) noexcept
+        bool throwing(bool on) noexcept
         {
             bool old(throwing_);
             throwing_ = on;
@@ -244,6 +245,22 @@ public:
         //- Extract a dictionary representation of the error information
         operator dictionary() const;
 
+        //- Demangle C++ symbol name (eg, name from typeid query).
+        //  \note requires symbols only - without extra '(' etc.
+        static word demangle(const char* symbol);
+
+        //- Demangle C++ symbol name from typeid query.
+        inline static word demangle(const std::type_info& ti)
+        {
+            return demangle(ti.name());
+        }
+
+        //- Demangle C++ symbol for given type.
+        template<typename T>
+        inline static word demangle()
+        {
+            return demangle(typeid(T).name());
+        }
 
         //- Helper function to print a stack, with optional upper limit.
         //- Used when OpenFOAM IO not yet initialised.
@@ -270,19 +287,11 @@ public:
 
     // Housekeeping
 
-        //- Specify exception throwing state (default is \b on)
-        //  \return the previous throwing state
-        bool throwExceptions(const bool on = true) noexcept
-        {
-            return throwing(on);
-        }
+        //- \deprecated(2021-11) use \c throwing(bool)
+        bool throwExceptions(bool on = true) noexcept { return throwing(on); }
 
-        //- Deactivate exception throwing
-        //  \return the previous throwing state
-        bool dontThrowExceptions() noexcept
-        {
-            return throwExceptions(false);
-        }
+        //- \deprecated(2021-11) use \c throwing(false)
+        bool dontThrowExceptions() noexcept { return throwing(false); }
 };
 
 

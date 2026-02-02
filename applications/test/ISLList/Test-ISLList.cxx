@@ -90,12 +90,12 @@ int main(int argc, char *argv[])
     for (const auto& val : myList)
     {
         Info<< "  " << val << nl;
-        // Info<<" is " << typeid(val).name() << endl;
+        // Info<<" is " << error::demangle(typeid(val)) << endl;
     }
 
     Info<< nl << "const_iterator:" << nl;
 
-    const ISLList<Scalar>& const_myList = myList;
+    const auto& const_myList = myList;
 
     forAllConstIters(const_myList, iter)
     {

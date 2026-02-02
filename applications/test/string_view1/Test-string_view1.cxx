@@ -54,11 +54,17 @@ int main(int argc, char *argv[])
         {
             const auto len = strlen(cstr);
 
+            std::string_view sv(cstr);
+
+
             Info<< nl
                 << "input: <" << cstr << '>'
-                << " type: " << typeid(cstr).name() << " len:" << len << nl;
+                << " type: "
+                << error::demangle(typeid(cstr)) << " len:" << len << nl;
+                // << typeid(cstr).name() << " len:" << len << nl;
 
-            Info<< "    view: " << std::string_view(cstr) << nl;
+            Info<< "    view: " << sv
+                << " type: " << error::demangle(typeid(sv)) << nl;
         }
     }
 

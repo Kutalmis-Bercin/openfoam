@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2017 OpenFOAM Foundation
-    Copyright (C) 2016-2023 OpenCFD Ltd.
+    Copyright (C) 2016-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -27,7 +27,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "error.H"
-#include <typeinfo>
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
@@ -103,7 +102,7 @@ inline T& Foam::autoPtr<T>::operator*()
     if (!ptr_)
     {
         FatalErrorInFunction
-            << "unallocated autoPtr of type " << typeid(T).name()
+            << "unallocated autoPtr of type " << error::demangle<T>() << nl
             << abort(FatalError);
     }
     return *ptr_;
@@ -123,7 +122,7 @@ inline T* Foam::autoPtr<T>::operator->()
     if (!ptr_)
     {
         FatalErrorInFunction
-            << "unallocated autoPtr of type " << typeid(T).name()
+            << "unallocated autoPtr of type " << error::demangle<T>() << nl
             << abort(FatalError);
     }
     return ptr_;

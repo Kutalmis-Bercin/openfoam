@@ -118,7 +118,7 @@ void testTransfer(const T& input)
 
     if (UPstream::master())
     {
-        Perr<<"test transfer (" << (typeid(T).name()) << "): ";
+        Perr<<"test transfer (" << error::demangle<T>() << "): ";
         perrInfo(data) << nl << endl;
 
         for (const int proci : UPstream::subProcs())

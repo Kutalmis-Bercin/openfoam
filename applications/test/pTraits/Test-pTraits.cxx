@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011 OpenFOAM Foundation
-    Copyright (C) 2023-2025 OpenCFD Ltd.
+    Copyright (C) 2023-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -81,7 +81,7 @@ void printTypeName()
     }
     else
     {
-        Info<< typeid(T).name();
+        Info<< error::demangle<T>();
     }
 }
 
@@ -118,6 +118,8 @@ void printTraits()
     printTypeName<T>();
     printMinMaxRange<T>();
 
+    using cmptType = typename pTraits_cmptType<T>::type;
+
     Info<< " integral=" << std::is_integral_v<T>
         << " floating=" << std::is_floating_point_v<T>
         << " rank=" << pTraits_rank<T>::value
@@ -126,7 +128,7 @@ void printTraits()
         << " rotate=" << Switch::name(is_rotational_vectorspace_v<T>)
         << " is_label=" << Switch::name(is_contiguous_label<T>::value)
         << " is_scalar=" << Switch::name(is_contiguous_scalar<T>::value)
-        << " cmptType=" << typeid(typename pTraits_cmptType<T>::type).name()
+        << " cmptType=" << error::demangle<cmptType>()
         << endl;
 }
 
@@ -140,7 +142,7 @@ void printTraits(const pTraits<T>& p)
 template<class T>
 void printDecltype()
 {
-    Info<< "cmptType : " << typeid(T).name() << nl;
+    Info<< "cmptType : " << error::demangle<T>() << nl;
 }
 
 

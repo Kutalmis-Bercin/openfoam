@@ -114,7 +114,7 @@ void printIteratorTest(IteratorType& iter)
     const auto iter2 = (iter - 5);
     const auto iter3 = (iter + 5);
 
-    // Info<< typeid(iter).name() << nl;
+    // Info<< error::demangle(typeid(iter)) << nl;
 
     Info<< "begin: " << *iter++;
     Info<< " next: " << *iter;

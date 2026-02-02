@@ -73,13 +73,8 @@ Ostream& printInfo
 template<class T, unsigned N>
 void compileInfo()
 {
-    // Info<< typeid(decltype(FixedList<T, N>)).name() << nl;
-
-    // Info<< "  holds: "
-    // << typeid(decltype(FixedList<T, N>::value_type())).name() << nl;
-
-    Info<< "max_size:"
-        << FixedList<T, N>::max_size() << nl;
+    Info<< "max_size:" << FixedList<T, N>::max_size()
+        << " of " << error::demangle<FixedList<T, N>>() << nl;
 }
 
 

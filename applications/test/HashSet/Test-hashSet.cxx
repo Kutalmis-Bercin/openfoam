@@ -95,9 +95,9 @@ void printHashSet(const HashSet<Key, Hash>& table)
 int main(int argc, char *argv[])
 {
     Info<< "labelHashSet hasher: "
-        << typeid(labelHashSet::hasher).name() << nl
+        << error::demangle<labelHashSet::hasher>() << nl
         << "HashSet<label> hasher: "
-        << typeid(HashSet<label>::hasher).name() << nl << nl;
+        << error::demangle<HashSet<label>::hasher>() << nl << nl;
 
     hashedWordList words
     ({

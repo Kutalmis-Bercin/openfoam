@@ -25,29 +25,29 @@ echo ========================================
 wmakeLnInclude -u OpenFOAM
 wmakeLnInclude -u OSspecific/"${WM_OSTYPE:-POSIX}"
 
-# Update version info (as required)
-OpenFOAM/Alltouch -check 2>/dev/null
-
 OSspecific/"${WM_OSTYPE:-POSIX}"/Allwmake $targetType $*
 
 case "$WM_COMPILER" in
 (Mingw*)
-    # Pstream/OpenFOAM cyclic dependency
-    # 1st pass: link as Pstream as single .o object
+    # Handle Pstream/OpenFOAM cyclic dependency
+    # - compile Pstream as single .o object
+    # - compile OpenFOAM and link against libPstream.o
     WM_MPLIB=dummy Pstream/Allwmake libo
     FOAM_LINK_DUMMY_PSTREAM=libo wmake $targetType OpenFOAM
 
-    # 2nd pass: link Pstream.{dll,so} against libOpenFOAM.{dll,so}
-    Pstream/Allwmake $targetType $*
-
-    # Force relink libOpenFOAM.{dll,so} against libPstream.{dll,so}
+    # Force relink of libOpenFOAM against libPstream.{dll,so}
     OpenFOAM/Alltouch 2>/dev/null
     ;;
 (*)
-    Pstream/Allwmake $targetType $*
+    ## # Update version info (as required)
+    ## OpenFOAM/Alltouch -check 2>/dev/null
+
+    # Force relink of libOpenFOAM against libPstream and OSspecific
+    OpenFOAM/Alltouch 2>/dev/null
     ;;
 esac
 
+Pstream/Allwmake $targetType $*
 wmake $targetType OpenFOAM
 
 # Frequently needed, even for minimal programs

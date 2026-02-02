@@ -120,8 +120,8 @@ inline Type& dynamicCast(U& obj)
     if (!casted)
     {
         FatalErrorInFunction
-            << "Attempt to cast type " << typeid(U).name()
-            << " to type " << typeid(Type).name()
+            << "Attempt to cast type " << error::demangle<U>()
+            << " to type " << error::demangle<Type>()
             << abort(FatalError);
     }
 
@@ -140,8 +140,8 @@ inline Type& dynamicCast(U& obj, const dictionary& dict)
     if (!casted)
     {
         FatalIOErrorInFunction(dict)
-            << "Attempt to cast type " << typeid(U).name()
-            << " to type " << typeid(Type).name()
+            << "Attempt to cast type " << error::demangle<U>()
+            << " to type " << error::demangle<Type>()
             << abort(FatalIOError);
     }
 

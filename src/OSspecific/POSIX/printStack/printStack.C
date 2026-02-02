@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2016 OpenFOAM Foundation
-    Copyright (C) 2019-2025 OpenCFD Ltd.
+    Copyright (C) 2019-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -96,25 +96,6 @@ inline std::string addressToWord(const uintptr_t addr)
 }
 
 
-// Note: demangle requires symbols only - without extra '(' etc.
-inline std::string demangleSymbol(const char* sn)
-{
-    int st = 0;
-
-    char* cxx_sname = abi::__cxa_demangle(sn, nullptr, nullptr, &st);
-
-    if (st == 0 && cxx_sname)
-    {
-        std::string demangled(cxx_sname);
-        free(cxx_sname);
-
-        return demangled;
-    }
-
-    return sn;
-}
-
-
 inline Foam::string& shorterPath(Foam::string& s)
 {
     s.replace(Foam::cwd() + '/', "");
@@ -200,6 +181,58 @@ inline Foam::fileName whichPath(const char* fn)
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
+// Note: demangle requires symbols only - without extra '(' etc.
+Foam::word Foam::error::demangle(const char* symbol)
+{
+    if (!symbol || !*symbol)
+    {
+        return word();
+    }
+
+    int status = 0;
+    char* cxx_sname = abi::__cxa_demangle(symbol, nullptr, nullptr, &status);
+
+    if (status == 0 && cxx_sname)
+    {
+        // Store as a Foam::word since it is useful to print like
+        // 'char*' (no surrounding quotes), but the demangled symbol
+        // can contain spaces (ie, use no strip).
+        //
+        // We also change the old style '> >' to '>>' when copying too.
+
+        const size_t nchars = ::strlen(cxx_sname);
+
+        word demangled;
+        demangled.reserve(nchars);
+
+        for (size_t i = 0; i < nchars; ++i)
+        {
+            demangled.push_back(cxx_sname[i]);
+
+            if
+            (
+                (i+2 < nchars)
+             && cxx_sname[i] == '>'
+             && cxx_sname[i+1] == ' '
+             && cxx_sname[i+2] == '>'
+            )
+            {
+                ++i;  // Eliminate extra space from '> >'
+            }
+        }
+
+        ::free(cxx_sname);
+
+        return demangled;
+    }
+    else
+    {
+        // Fallback is pass-through (no strip)
+        return word(symbol, false);
+    }
+}
+
+
 void Foam::error::safePrintStack(std::ostream& os, int size)
 {
     // Get raw stack symbols
@@ -250,7 +283,7 @@ void Foam::error::safePrintStack(std::ostream& os, int size)
 
             os  << str.substr(beg, ldelim-beg)
                 << ' '
-                << demangleSymbol
+                << error::demangle
                    (
                        str.substr(ldelim+1, rdelim-ldelim-1).c_str()
                    );
@@ -275,7 +308,7 @@ void Foam::error::safePrintStack(std::ostream& os, int size)
 
     os  << "=============" << std::endl;
 
-    free(strings);
+    ::free(strings);
 }
 
 
@@ -303,7 +336,7 @@ void Foam::error::printStack(Ostream& os, int size)
 
             if (info.dli_sname)
             {
-                os  << demangleSymbol(info.dli_sname).c_str();
+                os  << error::demangle(info.dli_sname);
             }
             else
             {

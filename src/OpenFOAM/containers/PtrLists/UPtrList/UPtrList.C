@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2016 OpenFOAM Foundation
-    Copyright (C) 2015-2025 OpenCFD Ltd.
+    Copyright (C) 2015-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -75,7 +75,7 @@ void Foam::UPtrList<T>::reorder(const labelUList& oldToNew, const bool check)
         FatalErrorInFunction
             << "Size of map (" << oldToNew.size()
             << ") not equal to list size (" << len
-            << ") for type " << typeid(T).name() << nl
+            << ") for type " << error::demangle<T>() << nl
             << abort(FatalError);
     }
 
@@ -90,7 +90,7 @@ void Foam::UPtrList<T>::reorder(const labelUList& oldToNew, const bool check)
             FatalErrorInFunction
                 << "Illegal index " << newIdx << nl
                 << "Valid indices are [0," << len << ") for type "
-                << typeid(T).name() << nl
+                << error::demangle<T>() << nl
                 << abort(FatalError);
         }
 
@@ -98,7 +98,8 @@ void Foam::UPtrList<T>::reorder(const labelUList& oldToNew, const bool check)
         {
             FatalErrorInFunction
                 << "reorder map is not unique; element " << newIdx
-                << " already used for type " << typeid(T).name()
+                << " already used for type "
+                << error::demangle<T>() << nl
                 << abort(FatalError);
         }
         newList[newIdx] = ptrs_[i];
@@ -125,7 +126,7 @@ void Foam::UPtrList<T>::sortOrder(const labelUList& order, const bool check)
         FatalErrorInFunction
             << "Size of map (" << order.size()
             << ") not equal to list size (" << len
-            << ") for type " << typeid(T).name() << nl
+            << ") for type " << error::demangle<T>() << nl
             << abort(FatalError);
     }
 
@@ -141,7 +142,7 @@ void Foam::UPtrList<T>::sortOrder(const labelUList& order, const bool check)
             FatalErrorInFunction
                 << "Illegal index " << oldIdx << nl
                 << "Valid indices are [0," << len << ") for type "
-                << typeid(T).name() << nl
+                << error::demangle<T>() << nl
                 << abort(FatalError);
         }
 
@@ -149,7 +150,8 @@ void Foam::UPtrList<T>::sortOrder(const labelUList& order, const bool check)
         {
             FatalErrorInFunction
                 << "order map is not unique; element " << oldIdx
-                << " already used for type " << typeid(T).name()
+                << " already used for type "
+                << error::demangle<T>() << nl
                 << abort(FatalError);
         }
 

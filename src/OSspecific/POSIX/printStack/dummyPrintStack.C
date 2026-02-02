@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011 OpenFOAM Foundation
-    Copyright (C) 2023 OpenCFD Ltd.
+    Copyright (C) 2023-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -29,6 +29,19 @@ License
 #include "error.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+Foam::word Foam::error::demangle(const char* symbol)
+{
+    if (!symbol || !*symbol)
+    {
+        return word();
+    }
+    else
+    {
+        // No strip. We wish to print like 'char*' without surrounding quotes
+        return word(symbol, false);
+    }
+}
 
 void Foam::error::safePrintStack(std::ostream& os, int size) {}
 void Foam::error::printStack(Ostream& os, int size) {}

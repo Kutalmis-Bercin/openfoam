@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
     Info<< nl << "scalarDict2: " << endl;
     forAllConstIters(scalarDict2, iter)
     {
-        std::cout<< "iter: " << typeid(*iter).name() << '\n';
+        std::cout<< "iter: " << error::demangle(typeid(*iter)) << '\n';
 
         Info<< "elem = " << *iter << endl;
     }
@@ -177,13 +177,13 @@ int main(int argc, char *argv[])
     //  underlying value.
     forAllConstIters(scalarDict2, iter)
     {
-        std::cout<< "iter: " << typeid(*iter).name() << '\n';
+        std::cout<< "iter: " << error::demangle(typeid(*iter)) << '\n';
 
         // Info<< "elem = " << *(*iter) << endl;
     }
 
     std::cout<< "iter type: "
-        << typeid(std::begin(scalarDict2)).name() << '\n';
+        << error::demangle(typeid(std::begin(scalarDict2))) << '\n';
 
     scalarDict.transfer(scalarDict2);
 

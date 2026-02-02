@@ -27,14 +27,14 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "error.H"
-#include <typeinfo>
 
 // * * * * * * * * * * * * * Static Member Functions * * * * * * * * * * * * //
 
 template<class T>
 inline Foam::word Foam::refPtr<T>::typeName()
 {
-    return Foam::word("refPtr<" + std::string(typeid(T).name()) + '>', false);
+    // No strip - the demangled symbol may contain spaces
+    return Foam::word("refPtr<" + error::demangle<T>() + '>', false);
 }
 
 
@@ -550,7 +550,7 @@ inline void Foam::refPtr<T>::operator=(const refPtr<T>& other)
     {
         FatalErrorInFunction
             << "Attempted assignment of an object reference of type "
-            << typeid(T).name()
+            << error::demangle<T>() << nl
             << abort(FatalError);
     }
 }

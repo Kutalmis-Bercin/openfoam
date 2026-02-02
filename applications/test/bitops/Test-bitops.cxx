@@ -29,11 +29,11 @@ Description
 \*---------------------------------------------------------------------------*/
 
 #include "bool.H"
+#include "error.H"
 #include "BitOps.H"
 #include "IOstreams.H"
 #include "stdFoam.H"
 
-#include <type_traits>
 #include <limits>
 
 
@@ -133,7 +133,7 @@ template<class T, int Offset = 19>
 void printOffset()
 {
     std::cout
-        << "pow2ceil of " << typeid(T).name() << " <" << sizeof(T) << "> = "
+        << "pow2ceil of " << error::demangle<T>() << " <" << sizeof(T) << "> = "
         << pow2ceil<size_t, sizeof(T)>::value
         << " shift = " << pow2topbit<sizeof(T)>::value << '\n';
 }

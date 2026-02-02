@@ -28,6 +28,7 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
+#include "error.H"
 #include "macros.H"
 #include "IOstreams.H"
 #include "List.H"
@@ -40,7 +41,8 @@ Description
 using namespace Foam;
 
 #define PRINT_TYPEID(arg)       \
-    Info<< typeid(arg).name() << " <= typeid of " << STRING_QUOTE(arg) << nl
+    Info<< error::demangle(typeid(arg)) \
+        << " <= typeid of " << STRING_QUOTE(arg) << nl
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

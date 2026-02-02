@@ -5,7 +5,7 @@
     \\  /    A nd           | www.openfoam.com
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
-    Copyright (C) 2018-2025 OpenCFD Ltd.
+    Copyright (C) 2018-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -35,6 +35,7 @@ Description
 #include "argList.H"
 #include "wordRes.H"
 #include "contiguous.H"
+#include "error.H"
 
 #include "IOstreams.H"
 #include "scalar.H"
@@ -65,7 +66,7 @@ void printInfo(const char* const name = nullptr)
 {
     if (name == nullptr)
     {
-        Info<< typeid(T).name();
+        Info<< error::demangle<T>();
     }
     else
     {

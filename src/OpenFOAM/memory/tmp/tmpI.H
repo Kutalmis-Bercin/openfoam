@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2017 OpenFOAM Foundation
-    Copyright (C) 2018-2023 OpenCFD Ltd.
+    Copyright (C) 2018-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -27,14 +27,14 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "error.H"
-#include <typeinfo>
 
 // * * * * * * * * * * * * * Static Member Functions * * * * * * * * * * * * //
 
 template<class T>
 inline Foam::word Foam::tmp<T>::typeName()
 {
-    return Foam::word("tmp<" + std::string(typeid(T).name()) + '>', false);
+    // No strip - the demangled symbol may contain spaces
+    return Foam::word("tmp<" + error::demangle<T>() + '>', false);
 }
 
 
@@ -49,7 +49,7 @@ inline void Foam::tmp<T>::checkUseCount() const
             << "Attempt to create more than "
             << (ptr_->refCount::use_count() + 1)
             << " tmp's referring to the same object of type tmp<"
-            << typeid(T).name() << '>'
+            << error::demangle<T>() << '>'
             << abort(FatalError);
     }
 }
@@ -504,7 +504,7 @@ inline void Foam::tmp<T>::operator=(const tmp<T>& other)
     {
         FatalErrorInFunction
             << "Attempted assignment of an object reference of type "
-            << typeid(T).name()
+            << error::demangle<T>() << nl
             << abort(FatalError);
     }
 }
