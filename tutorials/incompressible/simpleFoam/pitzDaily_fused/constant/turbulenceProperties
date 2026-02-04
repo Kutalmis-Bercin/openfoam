@@ -19,8 +19,9 @@ simulationType      RAS;
 RAS
 {
     // Tested with kEpsilon, realizableKE, kOmega, kOmegaSST,
-    // ShihQuadraticKE, LienCubicKE.
-    RASModel        kEpsilon;
+    // ShihQuadraticKE, LienCubicKE, incompressibleKEpsilon/
+    // incompressibleKOmegaSST (kEpsilon/kOmegaSST with expression templating)
+    RASModel        incompressibleKOmegaSST; //kEpsilon;
 
     turbulence      on;
 

@@ -170,7 +170,7 @@ public:
         typedef Field<ActualType> FieldType;
         auto& bfld = fld.boundaryFieldRef();
         const label n = bfld.size();
-#ifdef FOAM_OFFLOAD
+#if defined(__STDPAR__)
         constexpr bool foam_offload = true;
 #else
         constexpr bool foam_offload = false;
@@ -1137,6 +1137,101 @@ auto operator+
     typedef typename Expression::GeometricFieldConstRefWrap<GeoField> E1;
     typedef typename Expression::UniformGeometricFieldWrap<GeoField, Type> E2;
     return GF_add(E2(v, u), E1(v));
+}
+
+// Negation
+template<typename E1>
+class GF_negate
+:
+    public GeometricFieldExpression
+    <
+        GF_negate<E1>,
+        List_negate
+        <
+            typename E1::IntExpr
+        >,
+        List_negate
+        <
+            typename E1::UncoupledPatchExpr
+        >,
+        List_negate
+        <
+            typename E1::CoupledPatchExpr
+        >,
+        typename E1::value_type
+    >
+{
+    // cref if leaf, copy otherwise
+    typename std::conditional<E1::is_leaf, const E1&, const E1>::type u_;
+
+public:
+    static constexpr bool is_leaf = false;
+
+    //- Type to return for internal field
+    typedef typename E1::value_type value_type;
+
+    //- Type to return for patchField
+    typedef List_negate<typename E1::IntExpr> IntExpr;
+    typedef List_negate<typename E1::UncoupledPatchExpr> UncoupledPatchExpr;
+    typedef List_negate<typename E1::CoupledPatchExpr> CoupledPatchExpr;
+
+    GF_negate(const E1& u)
+    :
+        GeometricFieldExpression
+        <
+            GF_negate<E1>,
+            IntExpr,
+            UncoupledPatchExpr,
+            CoupledPatchExpr,
+            value_type
+        >
+        (
+            u.dimensions(),
+            u.oriented()
+        ),
+        u_(u)
+    {}
+    auto operator[](const label i) const
+    {
+        return -u_[i];
+    }
+    auto size() const noexcept { return u_.size(); }
+
+    IntExpr internalField() const
+    {
+        return u_.internalField();
+    }
+
+    UncoupledPatchExpr patchField(const label i) const
+    {
+        return u_.patchField(i);
+    }
+
+    CoupledPatchExpr coupledPatchField(const label i) const
+    {
+        return u_.coupledPatchField(i);
+    }
+
+    template<class AccessOp>
+    auto access(const AccessOp& cop, const label i) const
+    {
+        return -u_.access(cop, i);
+    }
+};
+template<typename E1>
+auto operator-
+(
+    GeometricFieldExpression
+    <
+        E1,
+        typename E1::IntExpr,
+        typename E1::UncoupledPatchExpr,
+        typename E1::CoupledPatchExpr,
+        typename E1::value_type
+    > const& u
+)
+{
+    return GF_negate<E1>(static_cast<const E1&>(u));
 }
 
 

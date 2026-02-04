@@ -257,6 +257,12 @@ protected:
 
 public:
 
+    // STL type definitions
+
+        //- The value type the matrix operates on
+        typedef Type value_type;
+
+
     //- Solver class returned by the solver function
     //- used for systems in which it is useful to cache the solver for reuse.
     //  E.g. if the solver is potentially expensive to construct (AMG) and can
@@ -746,6 +752,9 @@ public:
 
 
     // Expression templates
+
+        //- Have unique tag
+        using is_fvMatrix = void;
 
         //- Construct given a field to solve for and expressions for
         //- all the components

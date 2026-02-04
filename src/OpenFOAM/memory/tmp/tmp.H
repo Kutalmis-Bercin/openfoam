@@ -62,6 +62,7 @@ namespace Foam
 namespace Expression
 {
 template<class GeoField> class GeometricFieldConstTmpWrap;
+template<class fvMatrix> class fvMatrixConstTmpWrap;
 template<class T> class ListConstTmpWrap;
 }
 
@@ -70,6 +71,7 @@ template<class T> class refPtr;
 template<class T> class tmp;
 template<class Type, template<class> class PatchField, class GeoMesh>
 class GeometricField;
+template<class Type> class fvMatrix;
 
 /*---------------------------------------------------------------------------*\
                              Class tmp Declaration
@@ -368,25 +370,24 @@ public:
         //- Wrap value as expression
         auto expr() const
         {
-            // Add 'using is_GeometricField = void' to GeometricField
-            // Add 'using is_List = void' to List
+            // Add 'using is_GeometricField = void' to GeometricField to avoid
+            // having too many checks.
 
             if constexpr
             (
-                std::is_void_v<typename T::is_GeometricField>
+                std::is_base_of_v<fvMatrix<typename T::value_type>, T>
             )
+            {
+                return Expression::fvMatrixConstTmpWrap<T>(*this);
+            }
+            else if constexpr (std::is_void_v<typename T::is_GeometricField>)
             {
                 return Expression::GeometricFieldConstTmpWrap<T>(*this);
             }
-            else //if constexpr (std::is_void_v<T::is_List>)
+            else
             {
                 return Expression::ListConstTmpWrap<T>(*this);
             }
-            //else
-            //{
-            //    //static_assert("XXX",YYY);
-            //    return;
-            //}
         }
 };
 

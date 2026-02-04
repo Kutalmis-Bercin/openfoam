@@ -14,7 +14,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-libs            (fusedFiniteVolume);
+libs            (fusedFiniteVolume fusedTurbulenceModels);
 
 /*
 DebugSwitches
