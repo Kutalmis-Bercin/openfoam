@@ -28,13 +28,14 @@ Application
 
 \*---------------------------------------------------------------------------*/
 
+#include "ListExpression.H"
+#include "fvMatrixExpression.H"
 #include "Time.H"
 #include "argList.H"
 #include "fvMesh.H"
 #include "ListExpression.H"
 #include "GeometricFieldExpression.H"
 #include "fvCFD.H"
-#include "fvMatrixExpression.H"
 #include <ratio>
 #include <chrono>
 
@@ -47,104 +48,6 @@ tmp<volScalarField> someFunction(const volScalarField& fld)
     return fld*1.0001;
 }
 
-
-template<class Type>
-void fusedGaussFvmLaplacian
-(
-    fvMatrix<Type>& fvm,
-    const surfaceInterpolationScheme<scalar>& interpGammaScheme,
-    const fv::snGradScheme<Type>& snGradScheme,
-    const GeometricField<scalar, fvPatchField, volMesh>& gamma,
-    const GeometricField<Type, fvPatchField, volMesh>& vf
-)
-{
-    // Replacement for gaussLaplacianScheme::fvmLaplacian with scalar gamma
-    typedef GeometricField<Type, fvsPatchField, surfaceMesh> surfaceType;
-
-    const auto& mesh = vf.mesh();
-
-    // Expression for weights
-    const auto weights = interpGammaScheme.weights(gamma).expr();
-
-    // Expression for gamma_face * magSf
-    const auto gammaMagSf =
-        Expression::interpolate(gamma.expr(), weights, mesh)
-      * mesh.magSf().expr();
-
-    // Expression for deltaCoeffs
-    const auto deltaCoeffs = snGradScheme.deltaCoeffs(vf).expr();
-
-    // Construct matrix
-    Expression::fvmLaplacianUncorrected(fvm, gammaMagSf, deltaCoeffs);
-
-    if (snGradScheme.corrected())
-    {
-        // Wrap correction
-        const auto corr(snGradScheme.correction(vf).expr());
-        const auto V = mesh.V().expr();
-
-        if (mesh.fluxRequired(vf.name()))
-        {
-            fvm.faceFluxCorrectionPtr() = std::make_unique<surfaceType>
-            (
-                IOobject
-                (
-                    "faceFluxCorr",
-                    mesh.time().timeName(),
-                    mesh,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE,
-                    IOobject::NO_REGISTER
-                ),
-                mesh,
-                gamma.dimensions()
-               *mesh.magSf().dimensions()
-               *corr.data().dimensions()
-            );
-            auto& faceFluxCorr = *fvm.faceFluxCorrectionPtr();
-            faceFluxCorr = gammaMagSf*corr;
-
-            fvm.source() =
-                fvm.source().expr()
-              - (
-                    V * fvc::div
-                    (
-                        faceFluxCorr
-                    )().primitiveField().expr()
-                );
-        }
-        else
-        {
-            // Temporary field
-            surfaceType faceFluxCorr
-            (
-                IOobject
-                (
-                    "faceFluxCorr",
-                    mesh.time().timeName(),
-                    mesh,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE,
-                    IOobject::NO_REGISTER
-                ),
-                mesh,
-                gamma.dimensions()
-               *mesh.magSf().dimensions()
-               *corr.data().dimensions()
-            );
-            faceFluxCorr = gammaMagSf*corr;
-
-            fvm.source() =
-                fvm.source().expr()
-              - (
-                    V * fvc::div
-                    (
-                        faceFluxCorr
-                    )().primitiveField().expr()
-                );
-        }
-    }
-}
 
 
 using namespace std::chrono;
@@ -168,11 +71,14 @@ int main(int argc, char *argv[])
         ),
         mesh
     );
-    
+
+    // if (false)
     {
+        // Test ListsRefWrap
+
         volScalarField p2("p2", p);
         DebugVar(p2.boundaryFieldRef());
-    
+
         for (auto& pf : p.boundaryFieldRef())
         {
             scalarField newVals(pf.size());
@@ -183,40 +89,22 @@ int main(int argc, char *argv[])
             pf == newVals;
         }
 
-        //std::vector<const scalarField*> ptrs;
-        // List<const scalarField*> ptrs;
-        // for (const auto& pp : p.boundaryField())
-        // {
-        //     ptrs.push_back(&pp);
-        // }
-        DebugVar(sizeof(long));
-        DebugVar(p.boundaryField());
         Expression::ListsConstRefWrap<scalarField> expr(p.boundaryField());
 
         const auto twoA = expr + expr;
         Expression::ListsRefWrap<scalarField> expr2(p2.boundaryFieldRef());
         Pout<< "**before assignment twoA:" << twoA.size()
             << " expr2:" << expr2.size() << endl;
+
         expr2 = twoA;
+
         Pout<< "**after assignment twoA:" << twoA.size()
             << " expr2:" << expr2.size() << endl;
         DebugVar(p2.boundaryField());
-        // forAll(expr, i)
-        // {
-        //     Pout<< "i:" << i
-        //         //<< " expr:" << expr[i]
-        //         //<< " twoA:" << twoA[i]
-        //         << " expr2:" << expr2[i]
-        //         << endl;
-        // }
-        return 0;
     }
 
+    if (false)
     {
-        //DebugVar(linearInterpolate(p));
-        //auto tweights = linear<scalar>(mesh).weights(p);
-        //DebugVar(tweights);
-
         surfaceScalarField result
         (
             IOobject
@@ -231,6 +119,8 @@ int main(int argc, char *argv[])
             mesh,
             dimensionedScalar(p.dimensions(), 0)
         );
+
+        //- Supplied weights
         //result = Expression::interpolate
         //(
         //    p.expr(),
@@ -238,12 +128,10 @@ int main(int argc, char *argv[])
         //    mesh
         //);
 
+        //- Mesh-based linear weights
         result = Expression::linearInterpolate(p.expr(), mesh);
 
-
         DebugVar(result);
-
-        return 0;
     }
 
 
@@ -262,8 +150,9 @@ int main(int argc, char *argv[])
         mesh
     );
 
-    // Expresions of volFields
+    if (false)
     {
+        // Expressions of volFields
         volScalarField result
         (
             IOobject
@@ -299,46 +188,10 @@ int main(int argc, char *argv[])
             const duration<double> time_span = t2 - t1;
             Pout<< "Operation time:" << time_span.count() << endl;
         }
-
-//        const auto oldDimensions = p.dimensions();
-//        p.dimensions().reset(dimless);
-//        p2.dimensions().reset(dimless);
-//        result.dimensions().reset(dimless);
-//        {
-//
-//            Pout<< "Complex expression : No expression templates:" << endl;
-//            const high_resolution_clock::time_point t1 =
-//                high_resolution_clock::now();
-//            result = cos(p + 0.5*sqrt(p2-sin(p)));
-//            const high_resolution_clock::time_point t2 =
-//                high_resolution_clock::now();
-//            const duration<double> time_span = t2 - t1;
-//            Pout<< "Operation time:" << time_span.count() << endl;
-//        }
-//        {
-//            Pout<< "Complex expression : With expression templates:" << endl;
-//            const high_resolution_clock::time_point t1 =
-//                high_resolution_clock::now();
-//            const auto zeroDotFive
-//            (
-//                dimensionedScalar(dimless, 0.5).expr(p)
-//            );
-//            result = cos(p.expr() + zeroDotFive*sqrt(p2.expr()-sin(p.expr())));
-//            const high_resolution_clock::time_point t2 =
-//                high_resolution_clock::now();
-//            const duration<double> time_span = t2 - t1;
-//            Pout<< "Operation time:" << time_span.count() << endl;
-//        }
-//        p.dimensions().reset(oldDimensions);
-//        p2.dimensions().reset(oldDimensions);
-//        result.dimensions().reset(oldDimensions);
-
-        return 0;
-//        auto expression = someFunction(p).expr() + someFunction(p).expr();
-//        result = expression;
-//        DebugVar(result);
     }
+    if (false)
     {
+        // Expressions of (tmp)volFields
         volScalarField result
         (
             IOobject
@@ -358,8 +211,9 @@ int main(int argc, char *argv[])
         DebugVar(result);
     }
 
-    // Expresions of volFields
+    if (false)
     {
+        // Expressions of volFields
         volScalarField result
         (
             "result",
@@ -368,6 +222,8 @@ int main(int argc, char *argv[])
         );
         DebugVar(result);
     }
+
+    if (false)
     {
         // Fill p with some values
         forAll(p, celli)
@@ -390,58 +246,62 @@ int main(int argc, char *argv[])
         );
         DebugVar(result);
     }
+
+
     {
-        // For testing as a replacement of laplacian weights
-        const volScalarField gamma
-        (
-            IOobject
-            (
-                "gamma",
-                runTime.timeName(),
-                mesh,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                IOobject::NO_REGISTER
-            ),
-            mesh,
-            dimensionedScalar(dimless, 1.0)
-        );
+        // Expressions of fvMatrix
 
-        fvMatrix<scalar> fvm
-        (
-            p,
-            gamma.dimensions()*mesh.magSf().dimensions()*p.dimensions()
-        );
-
-        const linear<scalar> interpGammaScheme(mesh);
-        const fv::correctedSnGrad<scalar> snGradScheme(mesh);
-
-        fusedGaussFvmLaplacian
-        (
-            fvm,
-            interpGammaScheme,
-            snGradScheme,
-            gamma,
-            p
-        );
-
-        DebugVar(fvm.source());
-    }
-
-
-
-    // Expressions of fvMatrix
-    {
         tmp<fvMatrix<scalar>> tm0(fvm::laplacian(p));
-        const fvMatrix<scalar>& m0 = tm0();
-        DebugVar(m0.dimensions());
+
+        // Print a bit
+        {
+            const fvMatrix<scalar>& m0 = tm0();
+            DebugVar(m0.dimensions());
+            DebugVar(m0.hasDiag());
+            DebugVar(m0.hasUpper());
+            DebugVar(m0.hasLower());
+            forAll(m0.internalCoeffs(), i)
+            {
+                DebugVar(i);
+                if (m0.internalCoeffs().set(i))
+                {
+                    DebugVar(m0.internalCoeffs()[i]);
+                }
+                if (m0.boundaryCoeffs().set(i))
+                {
+                    DebugVar(m0.boundaryCoeffs()[i]);
+                }
+            }
+        }
 
         tmp<fvMatrix<scalar>> tm1(fvm::laplacian(p));
-        const fvMatrix<scalar>& m1 = tm1();
-        DebugVar(m1.dimensions());
 
-        fvMatrix<scalar> m2(p, m0.expr() + m1.expr());
-        DebugVar(m2.dimensions());
+
+        // Do some expression
+        const auto expr = tm0.expr() + tm1.expr();
+
+        // Evaluate expression
+        const fvMatrix<scalar> m2(p, expr);
+
+        // Print a bit
+        {
+            DebugVar(m2.dimensions());
+            DebugVar(m2.hasDiag());
+            DebugVar(m2.hasUpper());
+            DebugVar(expr.hasLower());
+            forAll(m2.internalCoeffs(), i)
+            {
+                DebugVar(i);
+                if (m2.internalCoeffs().set(i))
+                {
+                    DebugVar(m2.internalCoeffs()[i]);
+                }
+                if (m2.boundaryCoeffs().set(i))
+                {
+                    DebugVar(m2.boundaryCoeffs()[i]);
+                }
+            }
+        }
     }
 
     return 0;

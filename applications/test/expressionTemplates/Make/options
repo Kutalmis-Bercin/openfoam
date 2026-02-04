@@ -7,5 +7,5 @@ EXE_LIBS = \
 /*    -rpath /Volumes/case_sensitive/OpenFOAM/work/feature-et/platforms */ \
 /*    -rpath /Volumes/case_sensitive/OpenFOAM/work/feature-et/platforms/darwin64GccDPInt32Opt/lib */ \
 /*    -rpath /Volumes/case_sensitive/OpenFOAM/work/feature-et/platforms/darwin64GccDPInt32Opt/lib/$(FOAM_MPI)  */\
-    -L/Volumes/case_sensitive/OpenFOAM/work/feature-et/platforms/darwin64GccDPInt32Opt/lib \
+/*    -L/Volumes/case_sensitive/OpenFOAM/work/feature-et/platforms/darwin64GccDPInt32Opt/lib */ \
     -lfiniteVolume

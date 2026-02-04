@@ -46,13 +46,17 @@ int main(int argc, char *argv[])
     #include "createPolyMesh.H"
 
     {
+        // Use wrappers
+
+        typedef Expression::ListConstRefWrap<scalar> expr;
         scalarField vals0({1.0, 2.0, 3.0});
-        const Expression::ListConstRefWrap<scalar> wvals0(vals0);
+        const expr wvals0(vals0);
 
         scalarField vals1;
         Expression::ListRefWrap<scalar> wvals1(vals1.size(), vals1);
-        wvals1 = wvals0;
-        return 0;
+        wvals1 = expr(vals0) + expr(vals0) + sin(expr(vals0));
+        DebugVar(vals1);
+        // return 0;
     }
 
 
