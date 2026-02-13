@@ -255,6 +255,9 @@ public:
             return meshCutter_;
         }
 
+        //- Return access to the refinement engine
+        hexRef8& meshCutter() { return meshCutter_; }
+
         //- Cells which should not be refined/unrefined
         const bitSet& protectedCell() const
         {
