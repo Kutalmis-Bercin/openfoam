@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2017 OpenFOAM Foundation
-    Copyright (C) 2015-2022,2024 OpenCFD Ltd.
+    Copyright (C) 2015-2022,2024,2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -652,6 +652,7 @@ void Foam::fvMeshSubset::reset
     const cellList& oldCells = baseMesh().cells();
     const faceList& oldFaces = baseMesh().faces();
     const pointField& oldPoints = baseMesh().points();
+    const bool oldMoving = baseMesh().moving();
     const labelList& oldOwner = baseMesh().faceOwner();
     const labelList& oldNeighbour = baseMesh().faceNeighbour();
     const polyBoundaryMesh& oldPatches = baseMesh().boundaryMesh();
@@ -1297,6 +1298,13 @@ void Foam::fvMeshSubset::reset
     // Subset and add any zones
     subsetZones();
 
+    if (oldMoving)
+    {
+        DebugPout<< "Transferring oldPoints; setting moving flag" << endl;
+        subMeshPtr_().moving(true);
+        const_cast<pointField&>(subMeshPtr_().oldPoints()) =
+            pointField(baseMesh_.oldPoints(), pointMap_);
+    }
 
     if (basePointMeshPtr)
     {

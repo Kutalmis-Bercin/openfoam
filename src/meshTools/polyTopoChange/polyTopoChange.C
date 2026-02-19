@@ -229,6 +229,7 @@ void Foam::polyTopoChange::writeMeshStats(const polyMesh& mesh, Ostream& os)
         << "    cZoneSizes  : " << flatOutput(cellZoneSizes) << nl
         << "    fZoneSizes  : " << flatOutput(faceZoneSizes) << nl
         << "    pZoneSizes  : " << flatOutput(pointZoneSizes) << nl
+        << "    moving      : " << mesh.moving() << nl
         << endl;
 }
 
@@ -3904,6 +3905,13 @@ Foam::autoPtr<Foam::mapPolyMesh> Foam::polyTopoChange::changeMesh
             syncParallel
         );
         mesh.topoChanging(true);
+    }
+
+    // Clear out the old polyPatch information since we've destroyed the old
+    // primitives.
+    {
+        const_cast<polyBoundaryMesh&>(mesh.boundaryMesh()).clearAddressing();
+        const_cast<polyBoundaryMesh&>(mesh.boundaryMesh()).clearGeom();
     }
 
     // Clear out primitives

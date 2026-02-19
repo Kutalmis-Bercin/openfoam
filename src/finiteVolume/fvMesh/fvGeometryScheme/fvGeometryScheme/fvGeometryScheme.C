@@ -66,6 +66,25 @@ bool Foam::fvGeometryScheme::setMeshPhi() const
     auto tmeshPhi(const_cast<fvMesh&>(mesh_).setPhi());
     if (tmeshPhi)
     {
+        // Mesh moving and topology change. Recreate meshPhi
+        tmeshPhi.reset(nullptr);
+        tmeshPhi.reset
+        (
+            std::make_unique<surfaceScalarField>
+            (
+                IOobject
+                (
+                    "meshPhi",
+                    mesh_.time().timeName(),
+                    mesh_,
+                    IOobject::NO_READ,
+                    IOobject::NO_WRITE,
+                    IOobject::NO_REGISTER
+                ),
+                mesh_,
+                dimensionedScalar(dimVolume/dimTime, Foam::zero{})
+            )
+        );
         auto& meshPhi = tmeshPhi.ref();
         auto& meshPhii = meshPhi.primitiveFieldRef();
         forAll(meshPhii, facei)
@@ -91,6 +110,8 @@ bool Foam::fvGeometryScheme::setMeshPhi() const
                 meshPhip[facei] = f.sweptVol(oldPoints, currPoints)*rdt;
             }
         }
+        // Not yet used but might be useful
+        meshPhi.setUpToDate();
     }
 
     return true;

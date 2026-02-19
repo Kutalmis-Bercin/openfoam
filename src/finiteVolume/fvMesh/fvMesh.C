@@ -1007,41 +1007,16 @@ void Foam::fvMesh::updateMesh(const mapPolyMesh& mpm)
         }
     }
 
-
-    // Clear mesh motion flux (note: could instead save & map like volumes)
-    if (phiPtr_)
-    {
-        // Mesh moving and topology change. Recreate meshPhi
-        phiPtr_.reset(nullptr);
-
-        // Create mesh motion flux
-        phiPtr_ = std::make_unique<surfaceScalarField>
-        (
-            IOobject
-            (
-                "meshPhi",
-                this->time().timeName(),
-                *this,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                IOobject::NO_REGISTER
-            ),
-            *this,
-            dimensionedScalar(dimVolume/dimTime, Foam::zero{})
-        );
-    }
-
     // Clear the sliced fields
     clearGeomNotOldVol();
-
-    // Map all fields
-    mapFields(mpm);
-
     // Clear the current volume and other geometry factors
     surfaceInterpolation::updateMesh(mpm);
 
     // Clear any non-updateable addressing
     clearAddressing(true);
+
+    // Map all fields
+    mapFields(mpm);
 
     meshObject::updateMesh<fvMesh>(*this, mpm);
     meshObject::updateMesh<lduMesh>(*this, mpm);
