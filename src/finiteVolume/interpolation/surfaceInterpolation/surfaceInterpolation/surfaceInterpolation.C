@@ -48,6 +48,13 @@ namespace Foam
 
 void Foam::surfaceInterpolation::clearOut()
 {
+    if (debug)
+    {
+        Pout<< "surfaceInterpolation::clearOut() : "
+            << "Clearing geometric properties"
+            << endl;
+    }
+
     // TBD: potential to apply partial clear out only?
     // Move to fvGeometryScheme?
     weights_.clear();

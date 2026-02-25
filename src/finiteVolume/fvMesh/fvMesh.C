@@ -6,7 +6,7 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2017,2022 OpenFOAM Foundation
-    Copyright (C) 2016-2024 OpenCFD Ltd.
+    Copyright (C) 2016-2026 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -790,6 +790,26 @@ void Foam::fvMesh::mapFields(const mapPolyMesh& meshMap)
     (mapper);
     MapGeometricFields<tensor, fvsPatchField, fvMeshMapper, surfaceMesh>
     (mapper);
+
+    // Map the old flux ourselves since not registered.
+    if (phiPtr_)
+    {
+        auto& fld = *phiPtr_;
+
+        if (polyMesh::debug)
+        {
+            Info<< "Mapping "
+                << std::remove_reference<decltype(fld)>::type::typeName
+                << ' ' << fld.name() << endl;
+        }
+        // Store old time mesh motion fluxes if the time has been incremented
+        fld.storeOldTimes();
+
+        MapGeometricField(mapper, fld);
+
+        fld.instance() = fld.time().timeName();
+    }
+
 
     // Map all the dimensionedFields in the objectRegistry
     MapDimensionedFields<scalar, fvMeshMapper, volMesh>(mapper);

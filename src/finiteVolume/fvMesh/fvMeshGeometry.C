@@ -427,6 +427,8 @@ const Foam::surfaceScalarField& Foam::fvMesh::phi() const
     // mesh motion fluxes if the time has been incremented
     if (!time().subCycling() && phiPtr_->timeIndex() != time().timeIndex())
     {
+        DebugInFunction << "Zeroing mesh phi since time index has changed from "
+            << phiPtr_->timeIndex() << " to " << time().timeIndex() << endl;
         (*phiPtr_) = Zero;
     }
 

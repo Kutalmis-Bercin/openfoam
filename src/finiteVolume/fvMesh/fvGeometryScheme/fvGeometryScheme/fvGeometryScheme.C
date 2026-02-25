@@ -43,7 +43,10 @@ namespace Foam
 
 bool Foam::fvGeometryScheme::setMeshPhi() const
 {
-    if (!mesh_.moving())
+    DebugInFunction << "Setting mesh phi for " << mesh_.name()
+        << " changing:" << mesh_.changing() << endl;
+
+    if (!mesh_.changing())
     {
         return false;
     }
@@ -66,25 +69,35 @@ bool Foam::fvGeometryScheme::setMeshPhi() const
     auto tmeshPhi(const_cast<fvMesh&>(mesh_).setPhi());
     if (tmeshPhi)
     {
-        // Mesh moving and topology change. Recreate meshPhi
-        tmeshPhi.reset(nullptr);
-        tmeshPhi.reset
-        (
-            std::make_unique<surfaceScalarField>
-            (
-                IOobject
-                (
-                    "meshPhi",
-                    mesh_.time().timeName(),
-                    mesh_,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE,
-                    IOobject::NO_REGISTER
-                ),
-                mesh_,
-                dimensionedScalar(dimVolume/dimTime, Foam::zero{})
-            )
-        );
+        //- TBD. meshPhi now mapped inside fvMesh, not surfaceInterpolation,
+        //- so this code is not yet used. Might be useful for
+        //- e.g. solidBodyFvGeometryScheme though.
+
+        // // Mesh moving and topology change. Recreate meshPhi
+        // if (mesh_.topoChanging())
+        // {
+        //     DebugInFunction << "Clearing mesh phi for " << mesh_.name()
+        //         << " since topoChanging:" << mesh_.topoChanging() << endl;
+
+        //     tmeshPhi.reset(nullptr);
+        //     tmeshPhi.reset
+        //     (
+        //         std::make_unique<surfaceScalarField>
+        //         (
+        //             IOobject
+        //             (
+        //                 "meshPhi",
+        //                 mesh_.time().timeName(),
+        //                 mesh_,
+        //                 IOobject::NO_READ,
+        //                 IOobject::NO_WRITE,
+        //                 IOobject::NO_REGISTER
+        //             ),
+        //             mesh_,
+        //             dimensionedScalar(dimVolume/dimTime, Foam::zero{})
+        //         )
+        //     );
+        // }
         auto& meshPhi = tmeshPhi.ref();
         auto& meshPhii = meshPhi.primitiveFieldRef();
         forAll(meshPhii, facei)
@@ -158,6 +171,8 @@ Foam::tmp<Foam::fvGeometryScheme> Foam::fvGeometryScheme::New
 
 void Foam::fvGeometryScheme::movePoints()
 {
+    DebugInFunction << endl;
+
     if (mesh_.moving())
     {
         // Set the mesh motion fluxes
@@ -171,7 +186,9 @@ void Foam::fvGeometryScheme::movePoints()
 
 
 void Foam::fvGeometryScheme::updateMesh(const mapPolyMesh& mpm)
-{}
+{
+    DebugInFunction << endl;
+}
 
 
 // ************************************************************************* //
