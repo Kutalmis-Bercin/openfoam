@@ -204,6 +204,7 @@ void Foam::dynamicRefineFvMesh::mapFields(const mapPolyMesh& mpm)
     // point that the points have not moved and the cells have only been split
     // or merged. We hope that dynamicMotionSolverListFvMesh::mapFields
     // does not use old-time volumes ...
+    /*
     {
         const labelList& cellMap = mpm.cellMap();
         const labelList& reverseCellMap = mpm.reverseCellMap();
@@ -252,6 +253,7 @@ void Foam::dynamicRefineFvMesh::mapFields(const mapPolyMesh& mpm)
 
         setV0().field() = correctedV0;
     }
+    */
 
 
     // Correct the flux for modified/added faces. All the faces which only
