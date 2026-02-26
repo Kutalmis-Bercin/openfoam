@@ -459,7 +459,7 @@ Foam::dynamicRefineFvMesh::refine
     // Clear moving flag. This is currently required since geometry calculation
     // might get triggered when doing processor patches.
     // (TBD: should be in changeMesh if no inflation?)
-    moving(false);
+    // moving(false);
     // Create mesh (no inflation), return map from old to new mesh.
     autoPtr<mapPolyMesh> map = meshMod.changeMesh(*this, false);
 
@@ -582,7 +582,7 @@ Foam::dynamicRefineFvMesh::unrefine
     // Clear moving flag. This is currently required since geometry calculation
     // might get triggered when doing processor patches.
     // (TBD: should be in changeMesh if no inflation?)
-    moving(false);
+    // moving(false);
     // Create mesh (no inflation), return map from old to new mesh.
     autoPtr<mapPolyMesh> map = meshMod.changeMesh(*this, false);
 
