@@ -141,29 +141,6 @@ int main(int argc, char *argv[])
 
         ++runTime;
 
-        // To test dynamic load balancing cpuLoad performance metric
-/*
-        if (UPstream::myProcNo() == 0)
-        {
-            volatile double d = 0;
-            // for (int n = 0; n != 10000; ++n)
-            for (int n = 0; n != 100; ++n)
-            {
-                const scalar e = rng.sample01<scalar>();
-                for (int m = 0; m != 100000; ++m)
-                {
-                    d += d * n * m * e;
-                }
-            }
-        }
-*/
-
-        /*
-        Pout
-            << "CPU time increment: " << runTime.cpuTimeIncrement() << nl
-            << "Clock time increment: " << runTime.clockTimeIncrement() << nl;
-        */
-
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
         if (correctPhi)
@@ -183,18 +160,27 @@ int main(int argc, char *argv[])
                 // Do any mesh changes
                 DebugVar("pimpleFoam: before any mesh changes");
                 mesh.controlledUpdate();
-//std::chrono::steady_clock::time_point begin1 = std::chrono::steady_clock::now();
-                //DebugVar("pimpleFoam: Entering loadBalancer");
-
-                //DebugVar("pimpleFoam: Exiting loadBalancer");
-//std::chrono::steady_clock::time_point end1 = std::chrono::steady_clock::now();
-//std::cout << "Time difference (sec) = " <<  (std::chrono::duration_cast<std::chrono::microseconds>(end1 - begin1).count()) /1000000.0  <<std::endl;
 
                 DebugVar("pimpleFoam: before mesh.changing");
                 if (mesh.changing())
                 {
+                    DebugVar("AAAA");
+
+                    mesh.clearMeshPhi();
+
+                    DebugVar("BBBB");
+
+                    loadBalancer.balance();
+
+                    DebugVar("CCCC");
                     DebugVar("pimpleFoam: mesh.changing");
+
+
+                    DebugVar("FFFF");
+
                     MRF.update();
+
+                    DebugVar("HHHH");
 
                     if (correctPhi)
                     {
@@ -203,7 +189,11 @@ int main(int argc, char *argv[])
                         // from the mapped surface velocity
                         phi = mesh.Sf() & Uf();
 
+                        DebugVar("DDDD");
+
                         #include "correctPhi.H"
+
+                        DebugVar("EEEE");
 
                         // Make the flux relative to the mesh motion
                         fvc::makeRelative(phi, U);
@@ -218,36 +208,81 @@ int main(int argc, char *argv[])
                 }
 
                 DebugVar("pimpleFoam: before loadBalancer");
-
-                mesh.clearMeshPhi();
-                loadBalancer.balance();
-
             }
 
-//std::chrono::steady_clock::time_point begin2 = std::chrono::steady_clock::now();
-            #include "UEqn.H"
-//std::chrono::steady_clock::time_point end2 = std::chrono::steady_clock::now();
-//std::cout << "Time difference (sec) = " <<  (std::chrono::duration_cast<std::chrono::microseconds>(end2 - begin2).count()) /1000000.0  <<std::endl;
 
-            // --- Pressure corrector loop
-//std::chrono::steady_clock::time_point begin3 = std::chrono::steady_clock::now();
+            refPtr<surfaceScalarField> tmeshPhi = mesh.setPhi();
+
+            if (tmeshPhi)
+            {
+                DebugVar("MESHPHI EXISTS");
+            }
+            else
+            {
+                DebugVar("MESHPHI DOES NOT EXIST");
+
+                tmeshPhi.reset
+                (
+                    std::make_unique<surfaceScalarField>
+                    (
+                    IOobject
+                    (
+                        "meshPhi",
+                        mesh.time().timeName(),
+                        mesh,
+                        IOobject::LAZY_READ,
+                        IOobject::NO_WRITE,
+                        IOobject::NO_REGISTER
+                    ),
+                    mesh,
+                    dimensionedScalar(dimVolume/dimTime, Foam::zero{})
+                    )
+                );
+
+                // tmeshPhi.ref() = Zero;
+
+                DebugVar("JJJJ");
+
+                refPtr<surfaceScalarField> tmeshPhi2 = mesh.setPhi();
+                if (tmeshPhi2)
+                {
+                    DebugVar("NOW MESHPHI EXISTS");
+                }
+                else
+                {
+                    DebugVar("STILL MESHPI DOES NOT EXIST");
+                }
+            }
+
+            DebugVar("1111");
+            #include "UEqn.H"
+            DebugVar("2222");
+
+            DebugVar("3333");
             while (pimple.correct())
             {
+                DebugVar("4444");
                 #include "pEqn.H"
+                DebugVar("5555");
             }
-//std::chrono::steady_clock::time_point end3 = std::chrono::steady_clock::now();
-//std::cout << "Time difference (sec) = " <<  (std::chrono::duration_cast<std::chrono::microseconds>(end3 - begin3).count()) /1000000.0  <<std::endl;
 
+            DebugVar("6666");
             if (pimple.turbCorr())
             {
+                DebugVar("7777");
                 laminarTransport.correct();
+                DebugVar("8888");
                 turbulence->correct();
+                DebugVar("9999");
             }
         }
 
+        DebugVar("1010");
         runTime.write();
+        DebugVar("2020");
 
         runTime.printExecutionTime(Info);
+        DebugVar("3030");
     }
 
     Info<< "End\n" << endl;

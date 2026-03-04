@@ -117,6 +117,10 @@ bool Foam::fvGeometryScheme::setMeshPhi() const
 
             const auto& pp = meshPhip.patch().patch();
 
+            Pout<< "MESHPHIP.PP.PP.SIZE=" << pp.size()
+                << "MESHPHIP.SIZE=" << meshPhip.size()
+                << endl;
+
             forAll(pp, facei)
             {
                 const face& f = pp[facei];
