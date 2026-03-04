@@ -2681,6 +2681,9 @@ Foam::autoPtr<Foam::mapDistributePolyMesh> Foam::fvMeshDistribute::distribute
     );
 
 
+    // mesh_.clearMeshPhi();
+    // mesh_.createMeshPhi();
+
     const label nOldInternalFaces = mesh_.nInternalFaces();
     const labelList oldFaceOwner(mesh_.faceOwner());
 

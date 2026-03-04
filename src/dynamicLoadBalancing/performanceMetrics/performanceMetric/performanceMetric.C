@@ -195,7 +195,12 @@ Foam::tmp<Foam::scalarField> Foam::performanceMetric::processorWeights() const
     // Already reduced imbalance values - MOVED?
     // prevImbalanceValue_ = imbalanceValue_;
 
-    return tweights;
+    auto tweightsTest = tmp<scalarField>::New(nProcs, scalar(0));
+    scalarField& weightsTest = tweightsTest.ref();
+    weightsTest[0] = 1;
+    weightsTest[1] = 2;
+
+    return tweightsTest;
 }
 
 
