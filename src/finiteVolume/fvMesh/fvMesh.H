@@ -523,6 +523,8 @@ public:
             //- Return cell face motion fluxes, if any (can be nullptr)
             refPtr<surfaceScalarField> setPhi();
 
+            void createMeshPhi();
+
             //- Return old-time cell volumes
             DimensionedField<scalar, volMesh>& setV0();
 

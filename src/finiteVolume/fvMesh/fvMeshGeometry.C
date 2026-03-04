@@ -438,6 +438,32 @@ const Foam::surfaceScalarField& Foam::fvMesh::phi() const
 }
 
 
+void Foam::fvMesh::createMeshPhi()
+{
+    if (!phiPtr_)
+    {
+        DebugVar("Creating meshPhi field");
+
+        // Create mesh motion flux
+        phiPtr_ = std::make_unique<surfaceScalarField>
+        (
+            IOobject
+            (
+                "meshPhi",
+                this->time().timeName(),
+                *this,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                IOobject::NO_REGISTER
+            ),
+            *this,
+            dimensionedScalar(dimVolume/dimTime, Foam::zero{})
+        );
+    }
+
+    DebugVar("Amina korum");
+}
+
 Foam::refPtr<Foam::surfaceScalarField> Foam::fvMesh::setPhi()
 {
     refPtr<surfaceScalarField> phiref;
