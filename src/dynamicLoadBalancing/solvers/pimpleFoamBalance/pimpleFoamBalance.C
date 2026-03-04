@@ -215,13 +215,11 @@ int main(int argc, char *argv[])
                     {
                         #include "meshCourantNo.H"
                     }
-
-                    mesh.topoChanging(false);
                 }
 
                 DebugVar("pimpleFoam: before loadBalancer");
 
-                // mesh.clearMeshPhi();
+                mesh.clearMeshPhi();
                 loadBalancer.balance();
 
             }
