@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
                 DebugVar("pimpleFoam: before loadBalancer");
             }
 
-
+            mesh.createMeshPhi();
             refPtr<surfaceScalarField> tmeshPhi = mesh.setPhi();
 
             if (tmeshPhi)
@@ -220,38 +220,6 @@ int main(int argc, char *argv[])
             else
             {
                 DebugVar("MESHPHI DOES NOT EXIST");
-
-                tmeshPhi.reset
-                (
-                    std::make_unique<surfaceScalarField>
-                    (
-                    IOobject
-                    (
-                        "meshPhi",
-                        mesh.time().timeName(),
-                        mesh,
-                        IOobject::LAZY_READ,
-                        IOobject::NO_WRITE,
-                        IOobject::NO_REGISTER
-                    ),
-                    mesh,
-                    dimensionedScalar(dimVolume/dimTime, Foam::zero{})
-                    )
-                );
-
-                // tmeshPhi.ref() = Zero;
-
-                DebugVar("JJJJ");
-
-                refPtr<surfaceScalarField> tmeshPhi2 = mesh.setPhi();
-                if (tmeshPhi2)
-                {
-                    DebugVar("NOW MESHPHI EXISTS");
-                }
-                else
-                {
-                    DebugVar("STILL MESHPI DOES NOT EXIST");
-                }
             }
 
             DebugVar("1111");
