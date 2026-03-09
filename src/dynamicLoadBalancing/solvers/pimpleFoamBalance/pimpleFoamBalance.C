@@ -167,6 +167,10 @@ int main(int argc, char *argv[])
                 DebugVar("BBBB");
                 loadBalancer.balance();
 
+                DebugVar("BBBB+1");
+                mesh.createMeshPhi();
+
+
                 DebugVar("pimpleFoam: before mesh.changing");
                 if (mesh.changing())
                 {
@@ -207,7 +211,7 @@ int main(int argc, char *argv[])
                 DebugVar("pimpleFoam: before loadBalancer");
             }
 
-            mesh.createMeshPhi();
+            /*
             refPtr<surfaceScalarField> tmeshPhi = mesh.setPhi();
 
             if (tmeshPhi)
@@ -218,7 +222,7 @@ int main(int argc, char *argv[])
             {
                 DebugVar("MESHPHI DOES NOT EXIST");
             }
-
+            */
             DebugVar("1111");
             #include "UEqn.H"
             DebugVar("2222");
