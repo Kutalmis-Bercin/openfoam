@@ -161,20 +161,17 @@ int main(int argc, char *argv[])
                 DebugVar("pimpleFoam: before any mesh changes");
                 mesh.controlledUpdate();
 
+                DebugVar("AAAA");
+                mesh.clearMeshPhi();
+
+                DebugVar("BBBB");
+                loadBalancer.balance();
+
                 DebugVar("pimpleFoam: before mesh.changing");
                 if (mesh.changing())
                 {
-                    DebugVar("AAAA");
-
-                    mesh.clearMeshPhi();
-
-                    DebugVar("BBBB");
-
-                    loadBalancer.balance();
-
                     DebugVar("CCCC");
                     DebugVar("pimpleFoam: mesh.changing");
-
 
                     DebugVar("FFFF");
 
