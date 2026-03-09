@@ -100,12 +100,7 @@ void Foam::polyMesh::updateMesh(const mapPolyMesh& mpm)
                 label oldPointi = pointMap[newPointi];
                 if (oldPointi >= 0)
                 {
-                    // if (revPointMap[oldPointi] == newPointi) // master point
-                    if
-                    (
-                        oldPointi < revPointMap.size()
-                     && revPointMap[oldPointi] == newPointi
-                    ) // master point
+                    if (revPointMap[oldPointi] == newPointi) // master point
                     {
                         newMotionPoints[newPointi] = oldMotionPoints[oldPointi];
                     }
