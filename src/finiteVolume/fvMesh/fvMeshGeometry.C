@@ -208,9 +208,32 @@ const Foam::volScalarField::Internal& Foam::fvMesh::V0() const
 {
     if (!V0Ptr_)
     {
+        /*
         FatalErrorInFunction
             << "V0 is not available"
             << abort(FatalError);
+        */
+
+        WarningInFunction
+            << "V0 is not available. Initialising it from current cell "
+            << "volumes V. This can happen after topology-only updates "
+            << "when the mesh is marked as moving."
+            << endl;
+
+        V0Ptr_ = std::make_unique<DimensionedField<scalar, volMesh>>
+        (
+            IOobject
+            (
+                "V0",
+                this->time().timeName(),
+                *this,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                IOobject::NO_REGISTER
+            ),
+            V()
+        );
+
     }
 
     return *V0Ptr_;
@@ -219,12 +242,15 @@ const Foam::volScalarField::Internal& Foam::fvMesh::V0() const
 
 Foam::volScalarField::Internal& Foam::fvMesh::setV0()
 {
+    /*
     if (!V0Ptr_)
     {
         FatalErrorInFunction
             << "V0 is not available"
             << abort(FatalError);
     }
+    */
+    (void)V0();
 
     return *V0Ptr_;
 }
