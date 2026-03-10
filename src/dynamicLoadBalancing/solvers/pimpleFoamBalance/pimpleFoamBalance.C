@@ -86,8 +86,6 @@ Note
 #include "dynamicLoadBalancer.H"
 #include "Random.H"
 
-#include "sigFpe.H"
-
 #include <chrono>
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -163,9 +161,6 @@ int main(int argc, char *argv[])
                 DebugVar("pimpleFoam: before any mesh changes");
                 mesh.controlledUpdate();
 
-
-                Foam::sigFpe::unset(true);
-
                 DebugVar("AAAA");
                 mesh.clearMeshPhi();
 
@@ -175,7 +170,6 @@ int main(int argc, char *argv[])
                 DebugVar("BBBB+1");
                 mesh.createMeshPhi();
 
-                Foam::sigFpe::unset(false);
 
                 DebugVar("pimpleFoam: before mesh.changing");
                 if (mesh.changing())
