@@ -157,6 +157,10 @@ int main(int argc, char *argv[])
         {
             if (pimple.firstIter() || moveMeshOuterCorrectors)
             {
+                // Do any mesh changes
+                DebugVar("pimpleFoam: before any mesh changes");
+                mesh.controlledUpdate();
+
                 DebugVar("AAAA");
                 mesh.clearMeshPhi();
 
@@ -165,20 +169,6 @@ int main(int argc, char *argv[])
 
                 DebugVar("BBBB+1");
                 mesh.createMeshPhi();
-
-
-                // Do any mesh changes
-                DebugVar("pimpleFoam: before any mesh changes");
-                mesh.controlledUpdate();
-
-                // DebugVar("AAAA");
-                // mesh.clearMeshPhi();
-
-                // DebugVar("BBBB");
-                // loadBalancer.balance();
-
-                // DebugVar("BBBB+1");
-                // mesh.createMeshPhi();
 
 
                 DebugVar("pimpleFoam: before mesh.changing");
