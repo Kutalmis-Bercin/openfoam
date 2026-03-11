@@ -88,6 +88,8 @@ Note
 
 #include <chrono>
 
+#include "sigFpe.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
@@ -164,8 +166,12 @@ int main(int argc, char *argv[])
                 DebugVar("AAAA");
                 mesh.clearMeshPhi();
 
+                // Disable sigFpe
+                Foam::sigFpe::unset(true);
                 DebugVar("BBBB");
                 loadBalancer.balance();
+                // Enable sigFpe
+                Foam::sigFpe::unset(false);
 
                 DebugVar("BBBB+1");
                 mesh.createMeshPhi();
