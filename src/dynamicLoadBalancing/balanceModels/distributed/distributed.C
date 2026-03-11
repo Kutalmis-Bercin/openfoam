@@ -241,7 +241,7 @@ bool Foam::balanceModels::distributed::balance(const scalarField& procWeights)
     Pout<< "# distributed: The decomposition method is created." << endl;
 
 
-    // Create new decomposition distribution
+    // Create new decomposition distribution, new processor assignment per cell
     Pout<< "# distributed: Will generate the distribution list." << endl;
     const labelList distribution
     (
