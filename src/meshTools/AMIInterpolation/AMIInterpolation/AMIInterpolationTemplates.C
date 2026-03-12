@@ -182,6 +182,7 @@ void Foam::AMIInterpolation::interpolate
         const auto& srcWeightsSum = cache_.cSrcWeightsSum0();
         const auto& tgtAddress = cache_.cTgtAddress0();
 
+        DebugVar("checkSizes-1");
         checkSizes(fld, srcAddress, tgtAddress, defaultValues, result0);
 
         if (distributed() && cache_.cTgtMapPtr0())
@@ -226,6 +227,7 @@ void Foam::AMIInterpolation::interpolate
         const auto& srcWeightsSum = cache_.cSrcWeightsSum1();
         const auto& tgtAddress = cache_.cTgtAddress1();
 
+        DebugVar("checkSizes-2");
         checkSizes(fld, srcAddress, tgtAddress, defaultValues, result1);
 
         if (distributed() && cache_.cTgtMapPtr1())
@@ -285,6 +287,7 @@ void Foam::AMIInterpolation::interpolate
             (toSource ? srcWeightsSum_ : tgtWeightsSum_);
         const auto& tgtAddress = (toSource ? tgtAddress_ : srcAddress_);
 
+        DebugVar("checkSizes-3");
         checkSizes(fld, srcAddress, tgtAddress, defaultValues, result);
 
         if (distributed() && tgtMapPtr_)
