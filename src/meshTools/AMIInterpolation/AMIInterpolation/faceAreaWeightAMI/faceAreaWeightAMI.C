@@ -642,9 +642,18 @@ bool Foam::faceAreaWeightAMI::calculate
         return false;
     }
 
+    Pout<< "faceAreaWeightAMI: " << "srcPatch.size=" << srcPatch.size()
+        << "tgtPatch.size=" << tgtPatch.size()
+        << endl;
+
     addProfiling(ami, "faceAreaWeightAMI::calculate");
 
     advancingFrontAMI::calculate(srcPatch, tgtPatch, surfPtr);
+
+    Pout<< "AFTER faceAreaWeightAMI: " << "srcPatch.size=" << srcPatch.size()
+        << "tgtPatch.size=" << tgtPatch.size()
+        << endl;
+
 
     label srcFacei = 0;
     label tgtFacei = 0;

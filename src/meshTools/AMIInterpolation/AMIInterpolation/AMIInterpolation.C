@@ -114,8 +114,11 @@ Foam::label Foam::AMIInterpolation::calcDistribution
 
     if (UPstream::parRun())
     {
+        Pout<< "calcDist." << endl;
         // Involved in communication pattern?
         bool inCommGroup = (srcPatch.size() > 0 || tgtPatch.size() > 0);
+        Pout<< "srcPatch.size=" << srcPatch.size() << nl
+            << "tgtPatch.size=" << tgtPatch.size() <<endl;
 
         // Track which procs are involved
         const List<bool> hasFaces
@@ -123,13 +126,17 @@ Foam::label Foam::AMIInterpolation::calcDistribution
             UPstream::allGatherValues<bool>(inCommGroup, comm)
         );
 
+        DebugVar("AMI-1");
+
         // Always include master (0) in comm-group?
         // - so messages come from master
         if (useLocalComm_ > 1 && UPstream::master(comm))
         {
+        DebugVar("AMI-2");
             inCommGroup = true;
         }
 
+        DebugVar("AMI-3");
         // Number of communicating procs (ie, they have local faces)
         label nCommProcs(0);
 
@@ -145,11 +152,13 @@ Foam::label Foam::AMIInterpolation::calcDistribution
         DynamicList<label> subProcs(hasFaces.size());
         forAll(hasFaces, i)
         {
+        DebugVar("AMI-4");
             if (hasFaces.test(i))
             {
                 whichProci = i;
                 ++nCommProcs;
                 subProcs.push_back(i);
+        DebugVar("AMI-5");
             }
             else if
             (
@@ -160,6 +169,7 @@ Foam::label Foam::AMIInterpolation::calcDistribution
                 // Also include master (0) in comm-group?
                 // - so messages come from master
                 subProcs.push_back(UPstream::masterNo());
+        DebugVar("AMI-6");
             }
         }
 
@@ -171,11 +181,13 @@ Foam::label Foam::AMIInterpolation::calcDistribution
         {
             // Probably does not happen. No AMI faces? => no communicator
             geomComm.reset();
+        DebugVar("AMI-7");
         }
         else if (nCommProcs == 1)
         {
             proci = whichProci;
 
+        DebugVar("AMI-8");
             // No local communicator needed
             geomComm.reset();
 
@@ -184,6 +196,7 @@ Foam::label Foam::AMIInterpolation::calcDistribution
         }
         else  // (nCommProcs > 1)
         {
+        DebugVar("AMI-9");
             proci = -1;
 
             const label currComm = (geomComm.good() ? geomComm().comm() : -1);
@@ -191,15 +204,18 @@ Foam::label Foam::AMIInterpolation::calcDistribution
             if (useLocalComm_ == 0)
             {
                 // Backwards compatible : no local communicator
+        DebugVar("AMI-10");
                 geomComm.reset();
             }
             else if (nCommProcs == UPstream::nProcs(comm))
             {
+        DebugVar("AMI-11");
                 // Everyone is involved : no local communicator
                 geomComm.reset();
             }
             else if (inCommGroup)
             {
+        DebugVar("AMI-12");
                 if (UPstream::sameProcs(currComm, subProcs))
                 {
                     // Keep geomComm
@@ -213,6 +229,7 @@ Foam::label Foam::AMIInterpolation::calcDistribution
                 }
                 else
                 {
+        DebugVar("AMI-13");
                     geomComm.reset(new UPstream::communicator(comm, subProcs));
                     if (debug)
                     {
@@ -225,6 +242,7 @@ Foam::label Foam::AMIInterpolation::calcDistribution
             }
             else
             {
+        DebugVar("AMI-14");
                 // Not inCommGroup, but with local communicator elsewhere
                 geomComm.reset(new UPstream::communicator());
                 if (debug & 2)
@@ -241,6 +259,8 @@ Foam::label Foam::AMIInterpolation::calcDistribution
             << flatOutput(subProcs) << endl;
     }
 
+        DebugVar("AMI-15");
+        DebugVar(proci);
     return proci;
 }
 
