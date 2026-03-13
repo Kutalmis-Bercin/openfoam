@@ -42,6 +42,13 @@ inline const Foam::primitivePatch& Foam::advancingFrontAMI::tgtPatch() const
 {
     if (extendedTgtPatchPtr_)
     {
+        DebugVar("advancingFrontAMII.H::tgtPatch() - Returns extended");
+
+        Pout<< "advancingFrontAMII.H::tgtPatch().size = " << nl
+            << "extendedTgtPatchPtr.size = " << extendedTgtPatchPtr_().size() << nl
+            << "ttgtPatch0.size = " << ttgtPatch0_().size() << nl
+            << endl;
+
         return extendedTgtPatchPtr_();
     }
 
@@ -52,6 +59,7 @@ inline const Foam::primitivePatch& Foam::advancingFrontAMI::tgtPatch() const
             << abort(FatalError);
     }
 
+    DebugVar("advancingFrontAMII.H::tgtPatch() - Returns ttgtPatch0");
     return ttgtPatch0_();
 }
 

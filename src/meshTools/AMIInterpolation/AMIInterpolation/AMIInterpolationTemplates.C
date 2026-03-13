@@ -287,6 +287,13 @@ void Foam::AMIInterpolation::interpolate
             (toSource ? srcWeightsSum_ : tgtWeightsSum_);
         const auto& tgtAddress = (toSource ? tgtAddress_ : srcAddress_);
 
+        Pout<< "AMIInterpolationTemplates: " << nl
+            << "srcAddress_ = " << srcAddress_.size() << nl
+            << "tgtAddress_ = " << tgtAddress_.size() << nl
+            << "srcAddress = " << srcAddress.size() << nl
+            << "tgtAddress = " << tgtAddress.size() << nl
+            << endl;
+
         DebugVar("checkSizes-3");
         checkSizes(fld, srcAddress, tgtAddress, defaultValues, result);
 

@@ -1004,6 +1004,21 @@ bool Foam::AMIInterpolation::calculate
         return false;
     }
 
+    Pout<< "AMIInterpolation::calculate" << nl
+        << "srcPatch.size = " << srcPatch.size() << nl
+        << "tgtPatch.size = " << tgtPatch.size() << nl
+        << "srcMagSf = " << srcMagSf_.size() << nl
+        << "srcAddress_ = " << srcAddress_.size() << nl
+        << "srcWeights_ = " << srcWeights_.size() << nl
+        << "srcWeightsSum_ = " << srcWeightsSum_.size() << nl
+        << "srcCentroids_ = " << srcCentroids_.size() << nl
+        << "tgtMagSf = " << tgtMagSf_.size() << nl
+        << "tgtAddress_ = " << tgtAddress_.size() << nl
+        << "tgtWeights_ = " << tgtWeights_.size() << nl
+        << "tgtWeightsSum_ = " << tgtWeightsSum_.size() << nl
+        << "tgtCentroids_ = " << tgtCentroids_.size() << nl
+        << endl;
+
     addProfiling(ami, "AMIInterpolation::calculate");
 
 
@@ -1035,9 +1050,24 @@ bool Foam::AMIInterpolation::calculate
         }
     }
 
+    Pout<< "AMIInterpolation::calculate (PART - 2)" << nl
+        << "srcPatch.size = " << srcPatch.size() << nl
+        << "tgtPatch.size = " << tgtPatch.size() << nl
+        << "srcMagSf = " << srcMagSf_.size() << nl
+        << "srcAddress_ = " << srcAddress_.size() << nl
+        << "srcWeights_ = " << srcWeights_.size() << nl
+        << "srcWeightsSum_ = " << srcWeightsSum_.size() << nl
+        << "srcCentroids_ = " << srcCentroids_.size() << nl
+        << "tgtMagSf = " << tgtMagSf_.size() << nl
+        << "tgtAddress_ = " << tgtAddress_.size() << nl
+        << "tgtWeights_ = " << tgtWeights_.size() << nl
+        << "tgtWeightsSum_ = " << tgtWeightsSum_.size() << nl
+        << "tgtCentroids_ = " << tgtCentroids_.size() << nl
+        << endl;
 
     if (surfPtr)
     {
+        DebugVar("surfPtr is active.");
         srcPatchPts_ = srcPatch.points();
         projectPointsToSurface(surfPtr(), srcPatchPts_);
         tsrcPatch0_ = refPtr<primitivePatch>::New
@@ -1056,9 +1086,15 @@ bool Foam::AMIInterpolation::calculate
     }
     else
     {
+        DebugVar("surfPtr is not active.");
         tsrcPatch0_.cref(srcPatch);
         ttgtPatch0_.cref(tgtPatch);
     }
+
+    Pout<< "AMIInterpolation::calculate (PART - 4)" << nl
+        << "tsrcPatch0 = " << tsrcPatch0_().size() << nl
+        << "ttgtPatch0_ = " << ttgtPatch0_().size() << nl
+        << endl;
 
     // Note: use original communicator for statistics
     const label srcTotalSize = returnReduce
@@ -1104,6 +1140,21 @@ bool Foam::AMIInterpolation::calculate
 
     DebugInfo
         << "AMI: patch proc:" << singlePatchProc_
+        << endl;
+
+    Pout<< "AMIInterpolation::calculate (PART - 3x)" << nl
+        << "srcPatch.size = " << srcPatch.size() << nl
+        << "tgtPatch.size = " << tgtPatch.size() << nl
+        << "srcMagSf = " << srcMagSf_.size() << nl
+        << "srcAddress_ = " << srcAddress_.size() << nl
+        << "srcWeights_ = " << srcWeights_.size() << nl
+        << "srcWeightsSum_ = " << srcWeightsSum_.size() << nl
+        << "srcCentroids_ = " << srcCentroids_.size() << nl
+        << "tgtMagSf = " << tgtMagSf_.size() << nl
+        << "tgtAddress_ = " << tgtAddress_.size() << nl
+        << "tgtWeights_ = " << tgtWeights_.size() << nl
+        << "tgtWeightsSum_ = " << tgtWeightsSum_.size() << nl
+        << "tgtCentroids_ = " << tgtCentroids_.size() << nl
         << endl;
 
     return true;

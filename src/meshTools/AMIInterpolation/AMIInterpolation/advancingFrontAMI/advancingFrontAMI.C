@@ -589,12 +589,17 @@ bool Foam::advancingFrontAMI::calculate
         // patch
         if (distributed() && comm() != -1)
         {
+            DebugVar("Extended Tgt Patch");
             createExtendedTgtPatch();
         }
 
         const auto& src = this->srcPatch();
         const auto& tgt = this->tgtPatch();
 
+        Pout<< "advancingFrontAMI.calculate" << nl
+            << "src.size = " << src.size() << nl
+            << "tgt.size = " << tgt.size() << nl
+            << endl;
 
         if (maxDistance2_ > 0)
         {
@@ -625,13 +630,29 @@ bool Foam::advancingFrontAMI::calculate
 
         // Set initial sizes for weights and addressing - must be done even if
         // returns false below
+/*
         srcAddress_.setSize(src.size());
         srcWeights_.setSize(src.size());
         tgtAddress_.setSize(tgt.size());
         tgtWeights_.setSize(tgt.size());
+*/
+
+        Pout<< "advancingFrontAMI.calculate (PART - 3)" << nl
+            << "srcAddress.size = " << srcAddress_.size() << nl
+            << "srcWeights.size = " << srcWeights_.size() << nl
+            << "tgtAddress.size = " << tgtAddress_.size() << nl
+            << "tgtWeights.size = " << tgtWeights_.size() << nl
+            << endl;
 
         return true;
     }
+
+        Pout<< "advancingFrontAMI.calculate (PART - 2)" << nl
+            << "srcAddress.size = " << srcAddress_.size() << nl
+            << "srcWeights.size = " << srcWeights_.size() << nl
+            << "tgtAddress.size = " << tgtAddress_.size() << nl
+            << "tgtWeights.size = " << tgtWeights_.size() << nl
+            << endl;
 
     return false;
 }

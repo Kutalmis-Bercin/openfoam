@@ -642,16 +642,29 @@ bool Foam::faceAreaWeightAMI::calculate
         return false;
     }
 
-    Pout<< "faceAreaWeightAMI: " << "srcPatch.size=" << srcPatch.size()
-        << "tgtPatch.size=" << tgtPatch.size()
+    /*
+    // The following funcs are not allocated yet.
+    const auto& src1 = this->srcPatch();
+    const auto& tgt1 = this->tgtPatch();
+    */
+
+    Pout<< "faceAreaWeightAMI: " << nl
+        << "srcPatch.size=" << srcPatch.size() << nl
+        << "tgtPatch.size=" << tgtPatch.size() << nl
         << endl;
 
     addProfiling(ami, "faceAreaWeightAMI::calculate");
 
     advancingFrontAMI::calculate(srcPatch, tgtPatch, surfPtr);
 
-    Pout<< "AFTER faceAreaWeightAMI: " << "srcPatch.size=" << srcPatch.size()
-        << "tgtPatch.size=" << tgtPatch.size()
+    const auto& src1 = this->srcPatch();
+    const auto& tgt1 = this->tgtPatch();
+
+    Pout<< "AFTER faceAreaWeightAMI: " << nl
+        << "srcPatch.size=" << srcPatch.size() << nl
+        << "tgtPatch.size=" << tgtPatch.size() << nl
+        << "src1 = " << src1.size() << nl
+        << "tgt1 = " << tgt1.size() << nl
         << endl;
 
 
