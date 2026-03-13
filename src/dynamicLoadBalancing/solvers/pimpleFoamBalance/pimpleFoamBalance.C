@@ -90,6 +90,8 @@ Note
 
 #include "sigFpe.H"
 
+#include "polyTopoChange.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
@@ -177,13 +179,36 @@ int main(int argc, char *argv[])
                 mesh.createMeshPhi();
 
 
+
+/*
+                for (label patchi = 0; patchi < pbm.nNonProcessor(); ++patchi)
+                {
+                    auto* cycAmiPtr = isA<cyclicAMIPolyPatch>(pbm[patchi]);
+                    if (cycAmiPtr)
+                    {
+                DebugVar("POLY-3");
+                        // polyTopoChange polyTopo(mesh);
+
+                        // polyPatch& pp = pbm[patchi];
+
+                        // pp.setTopology(polyTopo);
+                        // cycAmiPtr->resetAMI();
+
+                        //cycAmiPtr->resetAMI(polyTopo.points());
+                        //cycAmiPtr->removeAMIFaces(polyTopo);
+                        //cycAmiPtr->addAMIFaces(polyTopo);
+
+                DebugVar("POLY-4");
+                    }
+                }
+*/
+
+
+
                 DebugVar("pimpleFoam: before mesh.changing");
                 if (mesh.changing())
                 {
                     DebugVar("CCCC");
-                    DebugVar("pimpleFoam: mesh.changing");
-
-                    DebugVar("FFFF");
 
                     MRF.update();
 
@@ -214,21 +239,32 @@ int main(int argc, char *argv[])
                     }
                 }
 
-                DebugVar("pimpleFoam: before loadBalancer");
+                DebugVar("pimpleFoam: complete pimpleIter");
             }
 
-            /*
-            refPtr<surfaceScalarField> tmeshPhi = mesh.setPhi();
+                DebugVar("POLY-1");
+                polyBoundaryMesh& pbm =
+                    const_cast<polyBoundaryMesh&>(mesh.boundaryMesh());
+                DebugVar("POLY-2");
 
-            if (tmeshPhi)
-            {
-                DebugVar("MESHPHI EXISTS");
-            }
-            else
-            {
-                DebugVar("MESHPHI DOES NOT EXIST");
-            }
-            */
+
+                polyTopoChange polyTopo(mesh);
+                DebugVar("POLY-3");
+                for (polyPatch& pp : pbm)
+                {
+                DebugVar("POLY-4");
+                    pp.changeTopology();
+                DebugVar("POLY-5");
+                    pp.setTopology(polyTopo);
+                DebugVar("POLY-6");
+                }
+
+                DebugVar("POLY-7");
+                autoPtr<mapPolyMesh> map = polyTopo.changeMesh(mesh, true);
+                DebugVar("POLY-8");
+
+                mesh.updateMesh(map());
+
             DebugVar("1111");
             #include "UEqn.H"
             DebugVar("2222");
