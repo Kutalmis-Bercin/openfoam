@@ -178,33 +178,6 @@ int main(int argc, char *argv[])
                 DebugVar("BBBB+1");
                 mesh.createMeshPhi();
 
-
-
-/*
-                for (label patchi = 0; patchi < pbm.nNonProcessor(); ++patchi)
-                {
-                    auto* cycAmiPtr = isA<cyclicAMIPolyPatch>(pbm[patchi]);
-                    if (cycAmiPtr)
-                    {
-                DebugVar("POLY-3");
-                        // polyTopoChange polyTopo(mesh);
-
-                        // polyPatch& pp = pbm[patchi];
-
-                        // pp.setTopology(polyTopo);
-                        // cycAmiPtr->resetAMI();
-
-                        //cycAmiPtr->resetAMI(polyTopo.points());
-                        //cycAmiPtr->removeAMIFaces(polyTopo);
-                        //cycAmiPtr->addAMIFaces(polyTopo);
-
-                DebugVar("POLY-4");
-                    }
-                }
-*/
-
-
-
                 DebugVar("pimpleFoam: before mesh.changing");
                 if (mesh.changing())
                 {
@@ -242,6 +215,7 @@ int main(int argc, char *argv[])
                 DebugVar("pimpleFoam: complete pimpleIter");
             }
 
+            /*
                 DebugVar("POLY-1");
                 polyBoundaryMesh& pbm =
                     const_cast<polyBoundaryMesh&>(mesh.boundaryMesh());
@@ -258,12 +232,18 @@ int main(int argc, char *argv[])
                     pp.setTopology(polyTopo);
                 DebugVar("POLY-6");
                 }
-
                 DebugVar("POLY-7");
+
+                mesh.clearMeshPhi();
+                DebugVar("POLY-77");
+
                 autoPtr<mapPolyMesh> map = polyTopo.changeMesh(mesh, true);
                 DebugVar("POLY-8");
 
+                mesh.createMeshPhi();
+                DebugVar("POLY-9")
                 mesh.updateMesh(map());
+*/
 
             DebugVar("1111");
             #include "UEqn.H"
