@@ -197,9 +197,6 @@ protected:
         //- Reset the AMI interpolator, supply patch points
         virtual void resetAMI(const UList<point>& points) const;
 
-        //-  Reset the AMI interpolator, use current patch points
-        virtual void resetAMI() const;
-
         //- Recalculate the transformation tensors
         virtual void calcTransforms();
 
@@ -604,6 +601,9 @@ public:
 
         //- Write the polyPatch data as a dictionary
         virtual void write(Ostream&) const;
+
+        //-  Reset the AMI interpolator, use current patch points
+        virtual void resetAMI() const;
 };
 
 
