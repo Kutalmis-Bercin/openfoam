@@ -34,6 +34,10 @@ inline const Foam::primitivePatch& Foam::advancingFrontAMI::srcPatch() const
             << abort(FatalError);
     }
 
+    Pout<< "advancingFrontAMII.H::srcPatch().size = " << nl
+        << "tsrcPatch0.size = " << tsrcPatch0_().size() << nl
+        << endl;
+
     return tsrcPatch0_();
 }
 

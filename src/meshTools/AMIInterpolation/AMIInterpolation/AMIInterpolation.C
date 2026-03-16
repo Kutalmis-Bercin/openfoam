@@ -1130,12 +1130,15 @@ bool Foam::AMIInterpolation::calculate
     // - if it is only one processor that holds all faces
     singlePatchProc_ = calcDistribution(srcPatch, tgtPatch, comm_, geomComm_);
 
+    Pout<< "singlePatchProc = " << singlePatchProc_ << endl;
+
     Info<< indent << "AMI: Patch source faces: " << srcTotalSize << nl
         << indent << "AMI: Patch target faces: " << tgtTotalSize << nl;
 
     if (distributed())
     {
-        Info<< indent << "AMI: distributed" << endl;
+        // Info<< indent << "AMI: distributed" << endl;
+        Pout<< indent << "AMI: distributed" << endl;
     }
 
     DebugInfo

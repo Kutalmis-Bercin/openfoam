@@ -630,12 +630,12 @@ bool Foam::advancingFrontAMI::calculate
 
         // Set initial sizes for weights and addressing - must be done even if
         // returns false below
-/*
+
         srcAddress_.setSize(src.size());
         srcWeights_.setSize(src.size());
         tgtAddress_.setSize(tgt.size());
         tgtWeights_.setSize(tgt.size());
-*/
+
 
         Pout<< "advancingFrontAMI.calculate (PART - 3)" << nl
             << "srcAddress.size = " << srcAddress_.size() << nl
