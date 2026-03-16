@@ -593,6 +593,12 @@ bool Foam::advancingFrontAMI::calculate
             createExtendedTgtPatch();
         }
 
+        if (!distributed())
+        {
+            DebugVar("Reset Tgt Patch");
+            extendedTgtPatchPtr_.reset(nullptr);
+        }
+
         const auto& src = this->srcPatch();
         const auto& tgt = this->tgtPatch();
 
