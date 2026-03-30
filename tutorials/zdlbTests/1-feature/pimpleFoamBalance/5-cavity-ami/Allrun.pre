@@ -1,0 +1,20 @@
+#!/bin/sh
+cd "${0%/*}" || exit                                # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # Tutorial run functions
+#------------------------------------------------------------------------------
+
+runApplication blockMesh
+
+runApplication topoSet
+
+runApplication createBaffles -overwrite
+
+restore0Dir
+
+runApplication decomposePar -decomposeParDict system/decomposeParDict.hierar
+
+runParallel -o postProcess -func processorField
+
+touch case.foam
+
+#------------------------------------------------------------------------------
