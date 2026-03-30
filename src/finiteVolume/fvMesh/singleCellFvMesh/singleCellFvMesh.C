@@ -287,6 +287,7 @@ void Foam::singleCellFvMesh::agglomerateMesh
 
     const label nFace = patchFaces.size();
 
+    DebugVar("singleCellFvMesh-1");
     // Actually change the mesh. // Owner, neighbour is trivial
     resetPrimitives
     (
@@ -298,6 +299,7 @@ void Foam::singleCellFvMesh::agglomerateMesh
         patchStarts,
         true                                    // syncPar
     );
+    DebugVar("singleCellFvMesh-2");
 
     // Adapt the zones
     cellZones().clear();

@@ -198,8 +198,11 @@ Foam::tmp<Foam::scalarField> Foam::performanceMetric::processorWeights() const
 
     auto tweightsTest = tmp<scalarField>::New(nProcs, scalar(0));
     scalarField& weightsTest = tweightsTest.ref();
-    weightsTest[0] = 998959;  // problematic processor weights
-    weightsTest[1] = 1041;
+    // weightsTest[0] = 998959;  // problematic processor weights
+    // weightsTest[1] = 1041;
+
+    weightsTest[0] = 1041;  // problematic processor weights
+    weightsTest[1] = 998959;
 
     return tweightsTest;
 //    return tweights;

@@ -757,6 +757,7 @@ bool Foam::polyMeshZipUpCells(polyMesh& mesh)
 
         // Reset the mesh. Number of active faces is one beyond the last patch
         // (patches guaranteed to be in increasing order)
+        DebugVar("polyMeshZipUpCells-1");
         mesh.resetPrimitives
         (
             autoPtr<pointField>(),  // <- null: leaves points untouched
@@ -767,6 +768,7 @@ bool Foam::polyMeshZipUpCells(polyMesh& mesh)
             patchStarts,
             true                // boundary forms valid boundary mesh.
         );
+        DebugVar("polyMeshZipUpCells-2");
 
         // Reset any addressing on face zones.
         mesh.faceZones().clearAddressing();

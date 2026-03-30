@@ -703,6 +703,7 @@ void Foam::polyMesh::resetPrimitives
     const bool validBoundary
 )
 {
+    DebugVar("resetPrimitives-1");
     // Clear addressing. Keep geometric props and updateable props for mapping.
     clearAddressing(true);
 
@@ -767,8 +768,10 @@ void Foam::polyMesh::resetPrimitives
     initMesh();
 
 
+    DebugVar("resetPrimitives-2");
     if (validBoundary)
     {
+    DebugVar("resetPrimitives-3");
         // Note that we assume that all the patches stay the same and are
         // correct etc. so we can already use the patches to do
         // processor-processor comms.
@@ -779,12 +782,14 @@ void Foam::polyMesh::resetPrimitives
         // Calculate the geometry for the patches (transformation tensors etc.)
         boundary_.calcGeometry();
 
+    DebugVar("resetPrimitives-4");
         // Warn if global empty mesh
         if (returnReduceAnd(!nPoints()) || returnReduceAnd(!nCells()))
         {
             FatalErrorInFunction
                 << "No points or no cells in mesh" << endl;
         }
+    DebugVar("resetPrimitives-5");
     }
 }
 

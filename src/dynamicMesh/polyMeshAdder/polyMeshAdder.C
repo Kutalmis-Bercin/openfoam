@@ -1906,7 +1906,9 @@ Foam::autoPtr<Foam::mapAddedPolyMesh> Foam::polyMeshAdder::add
     // Now we have extracted all information from all meshes.
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    DebugVar("polyMeshAdder-1");
     mesh0.resetMotion();    // delete any oldPoints.
+    DebugVar("polyMeshAdder-2");
     mesh0.resetPrimitives
     (
         autoPtr<pointField>::New(std::move(allPoints)),
@@ -1917,6 +1919,7 @@ Foam::autoPtr<Foam::mapAddedPolyMesh> Foam::polyMeshAdder::add
         patchStarts,    // patchstarts
         validBoundary   // boundary valid?
     );
+    DebugVar("polyMeshAdder-3");
 
     // Add zones to new mesh.
     mesh0.pointZones().clear();

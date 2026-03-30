@@ -3876,6 +3876,7 @@ Foam::autoPtr<Foam::mapPolyMesh> Foam::polyTopoChange::changeMesh
             }
         }
 
+        DebugVar("polyTopoChange-1");
         mesh.resetPrimitives
         (
             autoPtr<pointField>::New(std::move(renumberedMeshPoints)),
@@ -3886,6 +3887,7 @@ Foam::autoPtr<Foam::mapPolyMesh> Foam::polyTopoChange::changeMesh
             patchStarts,
             syncParallel
         );
+        DebugVar("polyTopoChange-2");
 
         mesh.topoChanging(true);
         // Note: could already set moving flag as well
@@ -3893,6 +3895,7 @@ Foam::autoPtr<Foam::mapPolyMesh> Foam::polyTopoChange::changeMesh
     }
     else
     {
+        DebugVar("polyTopoChange-1A");
         // Set new points.
         mesh.resetPrimitives
         (
@@ -3904,6 +3907,7 @@ Foam::autoPtr<Foam::mapPolyMesh> Foam::polyTopoChange::changeMesh
             patchStarts,
             syncParallel
         );
+        DebugVar("polyTopoChange-2A");
         mesh.topoChanging(true);
     }
 

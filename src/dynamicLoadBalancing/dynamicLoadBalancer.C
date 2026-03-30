@@ -238,11 +238,12 @@ bool Foam::dynamicLoadBalancer::balance()
     Pout<< tab << "anyDueImbalanced: " << anyDueImbalanced << endl;
 //
 
+/*
     if (!anyDueImbalanced)
     {
         return false;
     }
-
+*/
     curTimeIndex_ = mesh_.time().timeIndex();
     lastBalanceTime_ = mesh_.time().value();
 
