@@ -786,6 +786,7 @@ void Foam::polyMesh::resetPrimitives
         // Warn if global empty mesh
         if (returnReduceAnd(!nPoints()) || returnReduceAnd(!nCells()))
         {
+    DebugVar("resetPrimitives-6");
             FatalErrorInFunction
                 << "No points or no cells in mesh" << endl;
         }
