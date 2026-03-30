@@ -11,6 +11,7 @@ runApplication createBaffles -overwrite
 
 restore0Dir
 
+#runApplication decomposePar -decomposeParDict system/decomposeParDict.skewProcWeights
 runApplication decomposePar -decomposeParDict system/decomposeParDict.hierar
 
 runParallel -o postProcess -func processorField

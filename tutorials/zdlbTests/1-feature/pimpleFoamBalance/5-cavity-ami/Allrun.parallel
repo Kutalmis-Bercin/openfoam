@@ -7,8 +7,8 @@ cd "${0%/*}" || exit                                # Run from this directory
 
 runParallel -o $(getApplication)
 
-runParallel -s "final" postProcess -func processorField
+#runParallel -s "final" postProcess -func processorField
 
-touch case.foam
+#touch case.foam
 
 #------------------------------------------------------------------------------

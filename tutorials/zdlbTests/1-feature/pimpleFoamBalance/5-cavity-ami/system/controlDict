@@ -16,17 +16,16 @@ FoamFile
 
 DebugSwitches
 {
-    /*
     polyMesh 1;
     fvMesh   1;
     fvMeshDistribute 1;
     polyTopoChange 1;
-    */
 }
 
 application     pimpleFoam;
 application     pimpleFoamBalance;
 
+startFrom       latestTime;
 startFrom       startTime;
 
 startTime       0;
